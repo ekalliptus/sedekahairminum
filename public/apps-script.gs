@@ -127,7 +127,15 @@ function setupSheet() {
 function doPost(e) {
   try {
     var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-    var data = JSON.parse(e.postData.contents);
+
+    // Support both form-encoded (e.parameter) and JSON (e.postData.contents)
+    var data;
+    if (e.parameter && e.parameter.nama) {
+      data = e.parameter;
+    } else {
+      try { data = JSON.parse(e.postData.contents); } catch(_) { data = e.parameter || {}; }
+    }
+
     var lastRow = sheet.getLastRow();
     var no = lastRow - 2; // offset title + info + header rows
 

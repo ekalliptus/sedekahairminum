@@ -209,8 +209,11 @@ p { margin: 0; text-wrap: pretty; }
 }
 .btn--primary {
   background: var(--aqua);
-  color: #ffffff;
+  color: #03222a;
   box-shadow: var(--shadow-glow);
+}
+:root[data-theme="light"] .btn--primary {
+  color: #ffffff;
 }
 .btn--primary:hover {
   background: var(--aqua-soft);
@@ -228,6 +231,9 @@ p { margin: 0; text-wrap: pretty; }
 }
 .btn--brass {
   background: var(--brass);
+  color: #1a1208;
+}
+:root[data-theme="light"] .btn--brass {
   color: #ffffff;
 }
 .btn--brass:hover { background: var(--brass-soft); transform: translateY(-1px); }
