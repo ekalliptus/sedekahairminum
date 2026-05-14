@@ -192,7 +192,11 @@ function doPost(e) {
   }
 }
 
-function doGet() {
+function doGet(e) {
+  // Jika ada parameter nama → simpan data (GET request dari website)
+  if (e && e.parameter && e.parameter.nama) {
+    return doPost(e);
+  }
   return ContentService
     .createTextOutput(JSON.stringify({ status: 'ok', message: 'Sedekah Air Minum API aktif' }))
     .setMimeType(ContentService.MimeType.JSON);

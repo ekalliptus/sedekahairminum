@@ -267,26 +267,22 @@ const rekening = [
   }
 </style>
 
-<iframe id="gas-iframe" name="gas-iframe" style="display:none"></iframe>
-<form id="gas-form" target="gas-iframe" method="POST" action="https://script.google.com/macros/s/AKfycbxJde3L1B6syeq_ZTMIoDlcawB0fq_wum3rsWa-YXB6CqOCMAOWoyX16G8st7YHBP7O/exec" style="display:none">
-  <input name="nama" id="gas-nama" />
-  <input name="phone" id="gas-phone" />
-  <input name="email" id="gas-email" />
-  <input name="topik" id="gas-topik" />
-  <textarea name="pesan" id="gas-pesan"></textarea>
-  <input name="tanggal" id="gas-tanggal" />
-</form>
-
 <script is:inline>
+  var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxJde3L1B6syeq_ZTMIoDlcawB0fq_wum3rsWa-YXB6CqOCMAOWoyX16G8st7YHBP7O/exec';
   var WA_NUMBER = '6285319480974';
   var form = document.getElementById('contact-form');
   var btn = document.getElementById('submit-btn');
-  var gasForm = document.getElementById('gas-form');
   var btnDefault = 'Kirim Pesan <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
 
   function buildWaUrl(nama, topik, pesan) {
     var text = "Assalamu'alaikum, saya " + nama + ".\n\nSaya menghubungi terkait: " + topik + ".\n\n" + pesan + "\n\nTerima kasih. Jazakumullahu khairan.";
     return 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(text);
+  }
+
+  function sendToSheet(data) {
+    var params = new URLSearchParams(data).toString();
+    var url = APPS_SCRIPT_URL + '?' + params;
+    return fetch(url, { mode: 'no-cors' });
   }
 
   form.addEventListener('submit', function(e) {
@@ -297,25 +293,18 @@ const rekening = [
     var email = form.querySelector('#email').value.trim();
     var topik = form.querySelector('#topik').value;
     var pesan = form.querySelector('#pesan').value.trim();
+    var tanggal = new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
 
     btn.disabled = true;
     btn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" style="animation:spin 1s linear infinite"><circle cx="12" cy="12" r="10" stroke-dasharray="50" stroke-dashoffset="15"/></svg> Mengirim...';
 
-    document.getElementById('gas-nama').value = nama;
-    document.getElementById('gas-phone').value = phone;
-    document.getElementById('gas-email').value = email;
-    document.getElementById('gas-topik').value = topik;
-    document.getElementById('gas-pesan').value = pesan;
-    document.getElementById('gas-tanggal').value = new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
-
-    gasForm.submit();
-
-    setTimeout(function() {
-      window.open(buildWaUrl(nama, topik, pesan), '_blank');
-      btn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Terkirim — menuju WhatsApp...';
-      btn.disabled = false;
-      setTimeout(function() { btn.innerHTML = btnDefault; }, 4000);
-    }, 1500);
+    sendToSheet({ nama: nama, phone: phone, email: email, topik: topik, pesan: pesan, tanggal: tanggal })
+      .finally(function() {
+        window.open(buildWaUrl(nama, topik, pesan), '_blank');
+        btn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Terkirim — menuju WhatsApp...';
+        btn.disabled = false;
+        setTimeout(function() { btn.innerHTML = btnDefault; }, 4000);
+      });
   });
 </script>
 <style>
