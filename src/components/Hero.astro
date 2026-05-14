@@ -1,0 +1,85 @@
+---
+const slides = [
+  { src: '/assets/hero/DSC00481_5_11zon.webp', cap: 'Armada Sedekah Air Minum — siap melayani umat di pelosok negeri' },
+  { src: '/assets/hero/DSC00529_4_11zon.webp', cap: 'Body karoseri dengan branding Gerakan Wakaf Sumur' },
+  { src: '/assets/hero/DSC00489_7_11zon.webp', cap: 'Empat keran dispenser stainless steel siap mengalirkan air bersih' },
+  { src: '/assets/hero/DSC00549_3_11zon.webp', cap: 'Armada keliling menjangkau pelosok — sedekahairminum.com' },
+  { src: '/assets/hero/DSC00554_2_11zon.webp', cap: 'Setiap tetesan tercatat & tersalurkan dengan transparan' },
+  { src: '/assets/hero/DSC00570_1_11zon.webp', cap: 'Setiap tegukan, ada pahala yang terus mengalir' },
+  { src: '/assets/hero/DSC00484_6_11zon.webp', cap: 'Sistem filtrasi RO terbuka — air bersih langsung dari armada' },
+];
+---
+
+<section class="hero" id="hero">
+  <div class="hero__bg" id="hero-bg">
+    {slides.map((s, i) => (
+      <div class:list={['hero__slide', { 'hero__slide--active': i === 0 }]} data-slide={i}>
+        <div
+          class="hero__slide-img"
+          style={`background-image:url(${s.src});background-position:center;background-size:cover`}
+        ></div>
+      </div>
+    ))}
+  </div>
+
+  <div class="container" style="position:relative;z-index:2">
+    <div class="hero__content fade-up in">
+      <span class="eyebrow">Sedekahairminum.com</span>
+      <h1 class="hero__title" style="margin-top:24px">
+        Setiap Tegukan,<br/>
+        Pahala yang <em>Terus Mengalir</em>
+      </h1>
+      <p class="hero__sub">
+        Wakaf air bersih untuk masjid, pesantren, dan lembaga pendidikan Islam di pelosok Indonesia. Sedekah Anda kami salurkan langsung dengan armada keliling, tercatat dan transparan.
+      </p>
+      <div class="hero__actions">
+        <a href="/kontak" class="btn btn--primary btn--lg">
+          Mulai Bersedekah
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+        <a href="/penerima" class="btn btn--ghost btn--lg">Lihat Penerima Manfaat</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero__indicator" id="hero-indicator">
+    <span class="hero__counter" id="hero-counter">01 <span style="color:var(--ink-dim)">/ 07</span></span>
+    <div class="hero__dots" id="hero-dots">
+      {slides.map((_, i) => (
+        <button
+          class:list={['hero__dot', { 'hero__dot--active': i === 0 }]}
+          data-dot={i}
+          aria-label={`Slide ${i + 1}`}
+        ></button>
+      ))}
+    </div>
+    <div class="hero__caption" id="hero-caption">"{slides[0].cap}"</div>
+  </div>
+
+  <div class="hero__scroll">Scroll</div>
+</section>
+
+<script define:vars={{ slides }}>
+  let idx = 0;
+  const total = slides.length;
+  const allSlides = document.querySelectorAll('.hero__slide');
+  const allDots = document.querySelectorAll('.hero__dot');
+  const counter = document.getElementById('hero-counter');
+  const caption = document.getElementById('hero-caption');
+  const heroBg = document.getElementById('hero-bg');
+
+  function goTo(i) {
+    allSlides.forEach((s, j) => s.classList.toggle('hero__slide--active', j === i));
+    allDots.forEach((d, j) => d.classList.toggle('hero__dot--active', j === i));
+    counter.innerHTML = `${String(i + 1).padStart(2, '0')} <span style="color:var(--ink-dim)">/ ${String(total).padStart(2, '0')}</span>`;
+    caption.textContent = `"${slides[i].cap}"`;
+    idx = i;
+  }
+
+  allDots.forEach(d => d.addEventListener('click', () => goTo(Number(d.dataset.dot))));
+  setInterval(() => goTo((idx + 1) % total), 6000);
+
+  window.addEventListener('scroll', () => {
+    if (heroBg) heroBg.style.transform = `translateY(${window.scrollY * 0.18}px)`;
+  }, { passive: true });
+</script>

@@ -1,0 +1,58 @@
+---
+const testimonials = [
+  {
+    body: 'Distribusi air minum ini sangat bermanfaat bagi pondok kami, khususnya karena wilayah Gunungkidul memiliki air berkapur cukup tinggi. Bantuan ini membantu kebutuhan air minum santri agar tetap sehat dan semangat beraktivitas. Terima kasih atas kepedulian dan bantuannya.',
+    name: 'Yayasan Panti Asuhan Islam',
+    role: 'Penerima Manfaat · Gunungkidul',
+    photo: '/assets/testimoni/testi-1.webp',
+  },
+  {
+    body: 'Alhamdulillah, bantuan air minum ini sangat bermanfaat bagi pondok kami. Kami bersyukur karena kebutuhan air minum santri sangat terbantu, terlebih pengadaan galon sebelumnya sering terkendala keterlambatan pengiriman.',
+    name: 'Pondok Pesantren Ainul Yakin Special Childreen',
+    role: 'Penerima Manfaat',
+    photo: '/assets/testimoni/testi-2.webp',
+  },
+  {
+    body: 'Alhamdulillah, bantuan distribusi air minum ini membawa manfaat besar bagi pondok kami. Kebutuhan air bersih santri menjadi lebih tercukupi dan sangat membantu aktivitas sehari-hari di pondok. Kami mengucapkan terima kasih atas perhatian dan kepeduliannya.',
+    name: "Nurul Qur'an Islamic Boarding School",
+    role: 'Penerima Manfaat',
+    photo: '/assets/testimoni/testi-3.webp',
+  },
+];
+---
+
+<section class="section" style="background:var(--surface);border-block:1px solid var(--border)">
+  <div class="container">
+    <div class="section-head section-head--center fade-up">
+      <span class="eyebrow">Testimoni Penerima</span>
+      <h2 style="margin-top:18px">Suara dari <em class="italic-serif">mereka</em></h2>
+    </div>
+    <div class="testimonial-rail">
+      {testimonials.map((t, i) => (
+        <article class="testimonial fade-up" style={`transition-delay:${i * 80}ms`}>
+          <span class="testimonial__quote-mark" aria-hidden="true">&ldquo;</span>
+          <blockquote class="testimonial__body">{t.body}</blockquote>
+          <div class="testimonial__author">
+            <img src={t.photo} alt={t.name} class="testimonial__photo" loading="lazy" />
+            <div>
+              <div class="testimonial__name">{t.name}</div>
+              <div class="testimonial__role">{t.role}</div>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .testimonial__photo {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center 20%;
+    border: 2px solid var(--border-strong);
+    flex-shrink: 0;
+  }
+</style>

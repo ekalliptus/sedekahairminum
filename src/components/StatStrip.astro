@@ -1,0 +1,49 @@
+---
+const stats = [
+  { num: 7, suffix: '', label: 'Kecamatan Terjangkau' },
+  { num: 19, suffix: '', label: 'Lembaga Penerima' },
+  { num: 141, suffix: '', label: 'Galon/Distribusi' },
+  { num: 1, suffix: '', label: 'Kabupaten Aktif' },
+];
+---
+
+<section class="statstrip" aria-label="Statistik program">
+  <div class="statstrip__grid">
+    {stats.map(s => (
+      <div class="statstrip__cell">
+        <div class="statstrip__num" data-count-to={s.num} data-suffix={s.suffix}>
+          0{s.suffix && <small>{s.suffix}</small>}
+        </div>
+        <div class="statstrip__label">{s.label}</div>
+      </div>
+    ))}
+  </div>
+</section>
+
+<script>
+  const counters = document.querySelectorAll('[data-count-to]');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const el = entry.target as HTMLElement;
+      const to = parseFloat(el.dataset.countTo!);
+      const suffix = el.dataset.suffix || '';
+      const isFloat = to % 1 !== 0;
+      const start = performance.now();
+      const duration = 1600;
+
+      function tick(now: number) {
+        const t = Math.min(1, (now - start) / duration);
+        const eased = 1 - Math.pow(1 - t, 3);
+        const v = to * eased;
+        const display = isFloat ? v.toFixed(1) : Math.round(v).toLocaleString('id-ID');
+        el.innerHTML = display + (suffix ? `<small>${suffix}</small>` : '');
+        if (t < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+      io.unobserve(el);
+    });
+  }, { threshold: 0.2 });
+
+  counters.forEach(c => io.observe(c));
+</script>

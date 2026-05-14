@@ -1,0 +1,126 @@
+---
+const slides = [
+  { bg: '/assets/galeri/bmhatfcmzxoi6fobvfvk.webp', title: 'Silaturahmi dengan Penerima Manfaat', meta: 'Relawan bersama ibu-ibu penerima' },
+  { bg: '/assets/galeri/spwfmpjhtgbh5vx56mfl.webp', title: 'Kebersamaan di Lokasi Penyaluran', meta: 'Dokumentasi lapangan' },
+  { bg: '/assets/galeri/bqry5xvesoax6gjwffa1.webp', title: 'Penyerahan Bantuan Air Bersih', meta: 'Distribusi ke penerima manfaat' },
+  { bg: '/assets/galeri/cbhj4kvpxhuhrwqrpv4k.webp', title: 'Dokumentasi Perjalanan Armada', meta: 'Perjalanan ke pelosok' },
+  { bg: '/assets/galeri/izax5bbkvpnymrmwrptn.webp', title: 'Tim Relawan di Lapangan', meta: 'Gotong royong penyaluran' },
+  { bg: '/assets/galeri/ynugemwhd2e7naitihgx.webp', title: 'Air Bersih Sampai ke Pelosok', meta: 'Misi terus berjalan' },
+];
+---
+
+<section class="section">
+  <div class="container">
+    <div class="section-head fade-up">
+      <div>
+        <span class="eyebrow">Galeri Lapangan</span>
+        <h2 style="margin-top:18px">Dokumentasi <em class="italic-serif">perjalanan</em>.</h2>
+      </div>
+      <p class="section-head__intro">
+        Foto-foto dari lapangan — armada kami, penyerahan ke lembaga penerima, dan senyum mereka yang menerima manfaat.
+      </p>
+    </div>
+    <div class="fade-up">
+      <div class="gallery" id="gallery">
+        <div class="gallery__viewport">
+          {slides.map((s, i) => (
+            <div
+              class:list={['gallery__slide', { 'gallery__slide--active': i === 0 }]}
+              data-gallery-slide={i}
+              style={i === 0 ? `background-image:url(${s.bg});background-position:center` : 'background-position:center'}
+              data-lazy-bg={i > 0 ? s.bg : undefined}
+            >
+              {i > 0 && <div class="skeleton skeleton-image"></div>}
+            </div>
+          ))}
+          <div class="gallery__cap">
+            <div class="gallery__cap-title" id="gallery-title">{slides[0].title}</div>
+            <div class="gallery__cap-meta" id="gallery-meta">{slides[0].meta}</div>
+          </div>
+          <div class="gallery__nav">
+            <button class="gallery__arrow" id="gallery-prev" aria-label="Foto sebelumnya">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="18" height="18"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <button class="gallery__arrow" id="gallery-next" aria-label="Foto berikutnya">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="18" height="18"><path d="M9 6l6 6-6 6"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="gallery__thumbs">
+          {slides.map((s, i) => (
+            <div
+              class:list={['gallery__thumb', { 'gallery__thumb--active': i === 0 }]}
+              data-gallery-thumb={i}
+              style={`background-image:url(${s.bg});background-position:center`}
+              role="button"
+              tabindex="0"
+              aria-label={s.title}
+            ></div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script define:vars={{ slides }}>
+  var gIdx = 0;
+  var gTotal = slides.length;
+  var gSlides = document.querySelectorAll('[data-gallery-slide]');
+  var gThumbs = document.querySelectorAll('[data-gallery-thumb]');
+  var gTitle = document.getElementById('gallery-title');
+  var gMeta = document.getElementById('gallery-meta');
+  var gAutoTimer;
+
+  function loadBg(el) {
+    if (el.dataset.lazyBg && !el.style.backgroundImage) {
+      el.style.backgroundImage = 'url(' + el.dataset.lazyBg + ')';
+      var skel = el.querySelector('.skeleton');
+      if (skel) skel.remove();
+    }
+  }
+
+  function goGallery(i) {
+    loadBg(gSlides[i]);
+    gSlides.forEach(function(s, j) { s.classList.toggle('gallery__slide--active', j === i); });
+    gThumbs.forEach(function(t, j) { t.classList.toggle('gallery__thumb--active', j === i); });
+    if (gTitle) gTitle.textContent = slides[i].title;
+    if (gMeta) gMeta.textContent = slides[i].meta;
+    gIdx = i;
+  }
+
+  function resetAutoGallery() {
+    clearInterval(gAutoTimer);
+    gAutoTimer = setInterval(function() { goGallery((gIdx + 1) % gTotal); }, 3000);
+  }
+
+  document.getElementById('gallery-prev').addEventListener('click', function() {
+    goGallery((gIdx - 1 + gTotal) % gTotal);
+    resetAutoGallery();
+  });
+  document.getElementById('gallery-next').addEventListener('click', function() {
+    goGallery((gIdx + 1) % gTotal);
+    resetAutoGallery();
+  });
+  gThumbs.forEach(function(t) {
+    t.addEventListener('click', function() {
+      goGallery(Number(t.dataset.galleryThumb));
+      resetAutoGallery();
+    });
+  });
+
+  resetAutoGallery();
+</script>
+
+<style>
+  .gallery__thumbs {
+    grid-template-columns: repeat(6, 1fr) !important;
+  }
+  @media (max-width: 1080px) {
+    .gallery__thumbs { grid-template-columns: repeat(3, 1fr) !important; }
+  }
+  @media (max-width: 640px) {
+    .gallery__thumbs { grid-template-columns: repeat(3, 1fr) !important; }
+  }
+</style>

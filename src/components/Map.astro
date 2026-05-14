@@ -1,0 +1,55 @@
+---
+import IndonesiaMap from './IndonesiaMap';
+---
+
+<section class="section map-section">
+  <div class="container">
+    <div class="section-head section-head--center fade-up">
+      <span class="eyebrow">Jangkauan Nasional</span>
+      <h2 style="margin-top:18px">Peta Penyebaran <em class="italic-serif">Wakaf Air</em></h2>
+      <p class="section-head__intro" style="text-align:center;margin:16px auto 0">
+        Lihat sebaran lembaga penerima manfaat — dari Aceh hingga Papua. Setiap titik mewakili masjid, pesantren, atau sekolah yang telah tersentuh program.
+      </p>
+    </div>
+    <div class="fade-up map-wrapper">
+      <div class="skeleton skeleton-map" id="map-skeleton">
+        <div class="skeleton-map__dots">
+          <span class="skeleton-map__dot"></span>
+          <span class="skeleton-map__dot"></span>
+          <span class="skeleton-map__dot"></span>
+        </div>
+        <span class="skeleton-map__label">Memuat peta distribusi...</span>
+      </div>
+      <IndonesiaMap client:visible />
+    </div>
+    <div class="map-legend fade-up">
+      <span class="map-legend__item"><span class="map-legend__dot" style="background:#5ee4f0"></span> Lokasi penerima manfaat</span>
+      <span class="map-legend__item" style="margin-left:auto;color:var(--ink-dim)">Data 2026 · 19 lembaga · 141 galon/distribusi · Kab. Gunung Kidul</span>
+    </div>
+  </div>
+</section>
+
+<style>
+  .map-wrapper {
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    aspect-ratio: 21 / 9;
+    background: var(--bg-elev);
+    position: relative;
+  }
+  .map-wrapper :global(.relative) {
+    position: relative;
+    z-index: 2;
+  }
+  .skeleton-map {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+  @media (max-width: 640px) {
+    .map-wrapper {
+      aspect-ratio: 4 / 3;
+    }
+  }
+</style>

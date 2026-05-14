@@ -1,0 +1,275 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+
+const rekening = [
+  { bank: 'Bank Syariah Indonesia (BSI)', no: '7211 8989 19', label: 'BSI' },
+  { bank: 'Bank Mandiri', no: '137 0085 4321 09', label: 'MANDIRI' },
+  { bank: 'Bank BCA', no: '0451 7298 36', label: 'BCA' },
+];
+---
+
+<Layout
+  title="Kontak — Sedekah Air Minum"
+  description="Hubungi tim Sedekah Air Minum untuk informasi donasi, pengajuan penerima manfaat, atau kemitraan. WhatsApp, email, dan formulir kontak tersedia."
+>
+  <Nav />
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <span class="page-hero__eyebrow">Kontak Kami</span>
+        <h1 class="page-hero__title">Mari <em>terhubung</em>,<br/>mari bersedekah.</h1>
+        <p class="page-hero__intro">
+          Punya pertanyaan tentang program kami? Ingin bersedekah dalam jumlah besar? Atau lembaga Anda ingin menjadi penerima manfaat? Tim kami siap mendampingi.
+        </p>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top:24px">
+      <div class="container">
+        <div class="contact-grid">
+          <div class="contact-card fade-up">
+            <div>
+              <span class="eyebrow">Saluran Cepat</span>
+              <h2 style="margin-top:18px;font-size:clamp(28px, 3vw, 40px)">Kami merespons<br/>dalam <em class="italic-serif">1&times;24 jam</em>.</h2>
+            </div>
+
+            <div class="contact-item">
+              <div class="contact-item__icon">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.2-.7.1-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.2-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.1-.7-1.7-.9-2.3-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.2.2 2.1 3.3 5.2 4.6.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.4.2-.7.2-1.3.2-1.4 0-.1-.3-.2-.6-.3zM12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 5L2 22l5.2-1.4c1.4.8 3.1 1.2 4.8 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2z"/></svg>
+              </div>
+              <div>
+                <div class="contact-item__label">WhatsApp — Administrasi GWS</div>
+                <div class="contact-item__value"><a href="https://wa.me/6285319480974" target="_blank" rel="noopener noreferrer">+62 853-1948-0974</a></div>
+                <div class="contact-item__sub">Senin–Sabtu · 08:00–17:00 WIB</div>
+              </div>
+            </div>
+
+            <div class="contact-item">
+              <div class="contact-item__icon">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 6-10 7L2 6"/></svg>
+              </div>
+              <div>
+                <div class="contact-item__label">Email</div>
+                <div class="contact-item__value"><a href="mailto:gerakansumur@gmail.com">gerakansumur@gmail.com</a></div>
+                <div class="contact-item__sub">Untuk donasi korporat & kemitraan</div>
+              </div>
+            </div>
+
+            <div class="contact-item">
+              <div class="contact-item__icon">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              </div>
+              <div>
+                <div class="contact-item__label">Alamat Kantor</div>
+                <div class="contact-item__value">Karang Duwet II, Karangrejek</div>
+                <div class="contact-item__sub">Kec. Wonosari, Kab. Gunung Kidul, DI Yogyakarta</div>
+              </div>
+            </div>
+
+            <div class="contact-item">
+              <div class="contact-item__icon">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              </div>
+              <div>
+                <div class="contact-item__label">Jam Operasional</div>
+                <div class="contact-item__value">Senin – Sabtu · 08:00 – 17:00 WIB</div>
+                <div class="contact-item__sub">Tutup pada hari Minggu & libur nasional</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="fade-up" style="transition-delay:120ms">
+            <form class="form" id="contact-form">
+              <div style="margin-bottom:8px">
+                <span class="eyebrow">Kirim Pesan</span>
+                <h3 style="margin-top:14px;font-size:26px;font-weight:400">Tulis pesan Anda</h3>
+              </div>
+              <div class="form__row form__row--double">
+                <div class="form__row">
+                  <label for="nama">Nama Lengkap</label>
+                  <input id="nama" name="nama" required placeholder="Ahmad Hidayat" />
+                </div>
+                <div class="form__row">
+                  <label for="phone">No. WhatsApp</label>
+                  <input id="phone" name="phone" required placeholder="0812-xxxx-xxxx" />
+                </div>
+              </div>
+              <div class="form__row">
+                <label for="email">Email</label>
+                <input id="email" name="email" type="email" placeholder="nama@email.com" />
+              </div>
+              <div class="form__row">
+                <label for="topik">Topik</label>
+                <select id="topik" name="topik">
+                  <option>Sedekah / Donasi</option>
+                  <option>Pengajuan Penerima Manfaat</option>
+                  <option>Donasi Korporat</option>
+                  <option>Media & Kemitraan</option>
+                  <option>Lainnya</option>
+                </select>
+              </div>
+              <div class="form__row">
+                <label for="pesan">Pesan</label>
+                <textarea id="pesan" name="pesan" required placeholder="Tuliskan pesan Anda di sini..."></textarea>
+              </div>
+              <button type="submit" class="btn btn--primary" style="align-self:flex-start;margin-top:8px" id="submit-btn">
+                Kirim Pesan
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top:0">
+      <div class="container">
+        <div class="section-head fade-up">
+          <div>
+            <span class="eyebrow">Salurkan Donasi</span>
+            <h2 style="margin-top:18px">Rekening <em class="italic-serif">resmi</em> kami</h2>
+          </div>
+          <p class="section-head__intro">
+            Semua donasi akan tercatat dan tersalurkan. Konfirmasi setelah transfer ke WhatsApp kami untuk mendapatkan nomor resi pengiriman.
+          </p>
+        </div>
+        <div class="rek-grid">
+          {rekening.map(r => (
+            <div class="rek-card fade-up">
+              <div class="rek-label-corner">{r.label}</div>
+              <div style="font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--ink-dim)">{r.bank}</div>
+              <div style="font-family:var(--font-mono);font-size:22px;margin-top:14px;color:var(--ink-strong);letter-spacing:0.04em">{r.no}</div>
+              <div style="margin-top:14px;font-size:13px;color:var(--ink-muted)">a.n. Yayasan Sedekah Air Minum</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .page-hero {
+    padding-top: 180px;
+    padding-bottom: 96px;
+    text-align: center;
+  }
+  .page-hero__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--aqua);
+    margin-bottom: 24px;
+  }
+  .page-hero__eyebrow::before, .page-hero__eyebrow::after {
+    content: "";
+    width: 24px;
+    height: 1px;
+    background: currentColor;
+  }
+  .page-hero__title {
+    font-family: var(--font-display);
+    font-size: clamp(48px, 7vw, 88px);
+    font-weight: 400;
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    margin: 0 0 24px;
+  }
+  .page-hero__title em { font-style: italic; color: var(--aqua); }
+  .page-hero__intro {
+    font-size: clamp(16px, 1.3vw, 19px);
+    color: var(--ink-muted);
+    max-width: 62ch;
+    margin: 0 auto;
+    line-height: 1.65;
+  }
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; }
+  .contact-card { display: flex; flex-direction: column; gap: 24px; }
+  .contact-item {
+    display: grid;
+    grid-template-columns: 44px 1fr;
+    gap: 20px;
+    align-items: start;
+    padding: 24px 0;
+    border-top: 1px solid var(--border);
+  }
+  .contact-item:last-of-type { border-bottom: 1px solid var(--border); }
+  .contact-item__icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--aqua) 12%, transparent);
+    color: var(--aqua);
+    display: grid;
+    place-items: center;
+  }
+  .contact-item__label { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-dim); margin-bottom: 6px; }
+  .contact-item__value { font-size: 16px; color: var(--ink-strong); font-weight: 500; }
+  .contact-item__sub { font-size: 13px; color: var(--ink-muted); margin-top: 4px; }
+  .form {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: clamp(28px, 4vw, 48px);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .form__row { display: grid; gap: 8px; }
+  .form__row label { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-dim); }
+  .form__row input, .form__row textarea, .form__row select {
+    width: 100%;
+    padding: 14px 18px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    font-size: 15px;
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.25s;
+  }
+  .form__row input:focus, .form__row textarea:focus, .form__row select:focus { border-color: var(--aqua); }
+  .form__row textarea { resize: vertical; min-height: 120px; }
+  .form__row--double { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .rek-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .rek-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .rek-label-corner {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    font-family: var(--font-display);
+    font-style: italic;
+    color: var(--aqua);
+    opacity: 0.45;
+    font-size: 22px;
+  }
+  @media (max-width: 1080px) {
+    .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+    .rek-grid { grid-template-columns: 1fr; }
+  }
+</style>
+
+<script>
+  const form = document.getElementById('contact-form') as HTMLFormElement;
+  const btn = document.getElementById('submit-btn')!;
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    btn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Terkirim — kami akan hubungi Anda';
+    setTimeout(() => {
+      btn.innerHTML = 'Kirim Pesan <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+    }, 5000);
+  });
+</script>

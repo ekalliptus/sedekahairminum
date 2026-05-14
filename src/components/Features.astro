@@ -1,0 +1,107 @@
+---
+const features = [
+  { n: '01', title: 'Air Minum Berkualitas', desc: 'Air RO bersih, layak konsumsi, melalui sistem filtrasi multi-stage. Diuji berkala untuk memastikan setiap tetes aman bagi penerima manfaat.' },
+  { n: '02', title: 'Armada Berjalan', desc: 'Mobil karoseri custom dengan tangki stainless steel, mesin filtrasi onboard, dan 4 keran pengisian. Air bisa diambil langsung di lokasi.' },
+  { n: '03', title: 'Jangkauan Luas', desc: 'Menjangkau masjid, pesantren, dan sekolah di pelosok yang sulit dijangkau distribusi air komersial. Dari Jawa hingga Indonesia timur.' },
+  { n: '04', title: 'Transparan & Tercatat', desc: 'Setiap pengiriman diberi nomor resi unik. Donatur bisa melacak realisasi sedekahnya secara real-time melalui sistem tracking online.' },
+];
+
+const programSlides = [
+  { src: '/assets/program/trqf9zfd6hz97ngvn5jd.webp', cap: 'Penyaluran galon air bersih langsung di lokasi penerima manfaat.', meta: 'Distribusi · Masjid' },
+  { src: '/assets/program/arbqx8w3ey4ojtazvkb5.webp', cap: 'Galon Gerakan Wakaf Sumur siap disalurkan ke pesantren.', meta: 'Persiapan · Galon air' },
+  { src: '/assets/program/b3uh9laknqa7nekbljne.webp', cap: 'Koordinasi tim relawan di lapangan sebelum distribusi.', meta: 'Tim relawan' },
+  { src: '/assets/program/bu2p28ll3mlw8ogacirr.webp', cap: 'Air bersih sampai ke lembaga pendidikan Islam.', meta: 'Penyaluran · Sekolah' },
+  { src: '/assets/program/jby1yhbs5gzsuyn1edx0.webp', cap: 'Dokumentasi penyerahan bantuan air minum.', meta: 'Serah terima' },
+  { src: '/assets/program/zmihg9bm37tjuj4dg5nr.webp', cap: 'Relawan bersama penerima manfaat di lokasi.', meta: 'Silaturahmi' },
+];
+---
+
+<section class="section">
+  <div class="container">
+    <div class="section-head fade-up">
+      <div>
+        <span class="eyebrow">Tentang Program</span>
+        <h2 style="margin-top:18px">Air bersih,<br/>sampai ke <em class="italic-serif">pelosok</em>.</h2>
+      </div>
+      <p class="section-head__intro">
+        Platform wakaf air minum yang menghubungkan donatur dengan masjid, pesantren, dan lembaga pendidikan Islam di seluruh Indonesia. Bergabunglah dalam misi mulia menyebarkan air bersih ke pelosok nusantara.
+      </p>
+    </div>
+
+    <div class="feature-grid">
+      <div class="feature-list fade-up">
+        {features.map(f => (
+          <div class="feature">
+            <span class="feature__num">{f.n}</span>
+            <div>
+              <h3 class="feature__title">{f.title}</h3>
+              <p class="feature__desc">{f.desc}</p>
+            </div>
+            <span class="feature__arrow">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
+            </span>
+          </div>
+        ))}
+      </div>
+
+      <div class="feature-media fade-up" style="transition-delay:120ms" id="program-slider">
+        {programSlides.map((s, i) => (
+          <div
+            class="program-slide"
+            data-program-slide={i}
+            style={i === 0 ? `background-image:url(${s.src});background-position:center;background-size:cover;opacity:1` : 'background-position:center;background-size:cover;opacity:0'}
+            data-lazy-bg={i > 0 ? s.src : undefined}
+          ></div>
+        ))}
+        <div class="program-slide__overlay"></div>
+
+        <div class="program-slider__dots">
+          {programSlides.map((_, i) => (
+            <button
+              class:list={['program-slider__dot', { 'program-slider__dot--active': i === 0 }]}
+              data-program-dot={i}
+              aria-label={`Program slide ${i + 1}`}
+            ></button>
+          ))}
+        </div>
+
+        <div class="program-slider__counter">
+          <span id="program-counter" style="font-family:var(--font-mono);font-size:11px;letter-spacing:0.2em;color:rgba(255,255,255,0.7)">
+            01 / {String(programSlides.length).padStart(2, '0')}
+          </span>
+        </div>
+
+        <div class="feature-media__caption" style="position:absolute;left:24px;right:24px;bottom:24px;z-index:3;color:#fff;font-family:var(--font-display);font-style:italic;font-size:14px;line-height:1.5">
+          <span id="program-cap">"{programSlides[0].cap}"</span><br/>
+          <span id="program-meta" style="opacity:0.7;font-style:normal;font-size:12px;letter-spacing:0.08em;text-transform:uppercase">{programSlides[0].meta}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script define:vars={{ programSlides }}>
+  var pIdx = 0;
+  var pTotal = programSlides.length;
+  var pSlides = document.querySelectorAll('[data-program-slide]');
+  var pDots = document.querySelectorAll('[data-program-dot]');
+  var pCounter = document.getElementById('program-counter');
+  var pCap = document.getElementById('program-cap');
+  var pMeta = document.getElementById('program-meta');
+
+  function goProgram(i) {
+    var el = pSlides[i];
+    if (el && el.dataset.lazyBg && !el.style.backgroundImage) {
+      el.style.backgroundImage = 'url(' + el.dataset.lazyBg + ')';
+    }
+    pSlides.forEach(function(s, j) { s.style.opacity = j === i ? '1' : '0'; });
+    pDots.forEach(function(d, j) { d.classList.toggle('program-slider__dot--active', j === i); });
+    if (pCounter) pCounter.textContent = String(i + 1).padStart(2, '0') + ' / ' + String(pTotal).padStart(2, '0');
+    if (pCap) pCap.textContent = '"' + programSlides[i].cap + '"';
+    if (pMeta) pMeta.textContent = programSlides[i].meta;
+    pIdx = i;
+  }
+
+  pDots.forEach(function(d) { d.addEventListener('click', function() { goProgram(Number(d.dataset.programDot)); }); });
+  setInterval(function() { goProgram((pIdx + 1) % pTotal); }, 3000);
+</script>

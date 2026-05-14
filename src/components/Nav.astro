@@ -1,0 +1,105 @@
+---
+const currentPath = Astro.url.pathname;
+const links = [
+  { href: '/', label: 'Beranda' },
+  { href: '/tentang', label: 'Tentang Kami' },
+  { href: '/penerima', label: 'Penerima Manfaat' },
+  { href: '/artikel', label: 'Artikel' },
+  { href: '/kontak', label: 'Kontak' },
+];
+---
+
+<header class="nav" id="main-nav">
+  <div class="container">
+    <div class="nav__inner">
+      <a href="/" class="nav__brand" aria-label="Sedekah Air Minum — Beranda">
+        <img src="/assets/logo-0.png" alt="Sedekah Air Minum" class="nav__logo" />
+      </a>
+
+      <nav aria-label="Navigasi utama">
+        <ul class="nav__links">
+          {links.map(l => (
+            <li>
+              <a
+                href={l.href}
+                class:list={['nav__link', { 'nav__link--active': currentPath === l.href || (l.href !== '/' && currentPath.startsWith(l.href)) }]}
+              >{l.label}</a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <div class="nav__actions">
+        <button class="theme-toggle" id="theme-toggle" aria-label="Ganti tema">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+        <a href="/kontak" class="btn btn--primary btn--sm">
+          Sedekah Sekarang
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+        <button class="nav__mobile-toggle" id="mobile-toggle" aria-label="Menu navigasi" aria-expanded="false">
+          <svg class="icon-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 7h16M4 17h16"/></svg>
+          <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" style="display:none"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="nav__mobile-menu" id="mobile-menu">
+      {links.map(l => (
+        <a
+          href={l.href}
+          class:list={['nav__link', { 'nav__link--active': currentPath === l.href }]}
+        >{l.label}</a>
+      ))}
+    </div>
+  </div>
+</header>
+
+<style>
+  .icon-moon { display: none; }
+  :global([data-theme="light"]) .icon-sun { display: none; }
+  :global([data-theme="light"]) .icon-moon { display: block; }
+  .nav__logo {
+    height: 44px;
+    width: auto;
+    object-fit: contain;
+  }
+</style>
+
+<script>
+  const toggle = document.getElementById('theme-toggle')!;
+  toggle.addEventListener('click', () => {
+    const html = document.documentElement;
+    html.classList.add('theme-transitioning');
+    const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    html.classList.toggle('dark', next === 'dark');
+    localStorage.setItem('sam-theme', next);
+    setTimeout(() => html.classList.remove('theme-transitioning'), 700);
+  });
+
+  const mobileToggle = document.getElementById('mobile-toggle')!;
+  const mobileMenu = document.getElementById('mobile-menu')!;
+  const menuIcon = mobileToggle.querySelector('.icon-menu') as HTMLElement;
+  const closeIcon = mobileToggle.querySelector('.icon-close') as HTMLElement;
+
+  mobileToggle.addEventListener('click', () => {
+    const open = !mobileMenu.classList.contains('is-open');
+    mobileMenu.classList.toggle('is-open', open);
+    mobileToggle.setAttribute('aria-expanded', String(open));
+    menuIcon.style.display = open ? 'none' : 'block';
+    closeIcon.style.display = open ? 'block' : 'none';
+  });
+
+  let lastY = 0;
+  const nav = document.getElementById('main-nav')!;
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('nav--scrolled', window.scrollY > 30);
+    lastY = window.scrollY;
+  }, { passive: true });
+</script>

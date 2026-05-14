@@ -1,0 +1,165 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  canonical?: string;
+  ogImage?: string;
+}
+
+const { title, description, canonical, ogImage } = Astro.props;
+const siteUrl = 'https://sedekahairminum.com';
+const canonicalUrl = canonical || new URL(Astro.url.pathname, siteUrl).href;
+const ogImageUrl = ogImage || `${siteUrl}/assets/hero/DSC00529_4_11zon.webp`;
+---
+<!doctype html>
+<html lang="id" data-theme="dark" class="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonicalUrl} />
+
+  <!-- Security -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta http-equiv="X-Frame-Options" content="SAMEORIGIN" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+
+  <meta name="theme-color" content="#050d14" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#f4f7f9" media="(prefers-color-scheme: light)" />
+  <meta name="color-scheme" content="dark light" />
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+  <meta name="author" content="Yayasan Gerakan Wakaf Sumur" />
+  <meta name="publisher" content="Sedekah Air Minum" />
+  <meta name="geo.region" content="ID-YO" />
+  <meta name="geo.placename" content="Gunung Kidul, DI Yogyakarta" />
+  <meta name="geo.position" content="-7.955;110.58" />
+  <meta name="ICBM" content="-7.955, 110.58" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="id_ID" />
+  <meta property="og:site_name" content="Sedekah Air Minum" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonicalUrl} />
+  <meta property="og:image" content={ogImageUrl} />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Armada Sedekah Air Minum — Gerakan Wakaf Air Bersih" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={ogImageUrl} />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="apple-touch-icon" href="/assets/logo.webp" />
+
+  <!-- Fonts — preload critical -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap"
+  />
+
+  <!-- Structured Data: Organization -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "NGO",
+    "name": "Yayasan Gerakan Wakaf Sumur",
+    "alternateName": ["Sedekah Air Minum", "SAM", "GWS"],
+    "url": siteUrl,
+    "logo": `${siteUrl}/assets/logo.webp`,
+    "image": ogImageUrl,
+    "description": "Gerakan wakaf air bersih untuk masjid, pesantren, dan lembaga pendidikan Islam di Gunung Kidul, DI Yogyakarta. Sedekah jariyah yang terus mengalir.",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Karang Duwet II, Karangrejek",
+      "addressLocality": "Wonosari",
+      "addressRegion": "Gunung Kidul, DI Yogyakarta",
+      "addressCountry": "ID"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": -7.955,
+      "longitude": 110.58
+    },
+    "telephone": "+6285319480974",
+    "email": "gerakansumur@gmail.com",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+6285319480974",
+      "contactType": "customer service",
+      "availableLanguage": "Indonesian"
+    },
+    "areaServed": {
+      "@type": "AdministrativeArea",
+      "name": "Kabupaten Gunung Kidul, DI Yogyakarta, Indonesia"
+    },
+    "foundingDate": "2022",
+    "numberOfEmployees": { "@type": "QuantitativeValue", "value": 19, "unitText": "lembaga penerima" },
+    "knowsAbout": ["wakaf air", "sedekah air minum", "distribusi air bersih", "pesantren", "gerakan wakaf sumur"],
+    "sameAs": []
+  })} />
+
+  <!-- Structured Data: WebSite (for sitelinks search) -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Sedekah Air Minum",
+    "url": siteUrl,
+    "inLanguage": "id",
+    "publisher": {
+      "@type": "Organization",
+      "name": "Yayasan Gerakan Wakaf Sumur"
+    }
+  })} />
+
+  <!-- Structured Data: BreadcrumbList -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Beranda", "item": siteUrl },
+      ...(Astro.url.pathname !== '/' ? [{ "@type": "ListItem", "position": 2, "name": title.split(' — ')[0], "item": canonicalUrl }] : [])
+    ]
+  })} />
+
+  <style is:global>
+    @import '../styles/global.css';
+    @import '../styles/tailwind.css';
+  </style>
+</head>
+<body>
+  <slot />
+
+  <script is:inline>
+    (function() {
+      var saved = localStorage.getItem('sam-theme');
+      if (saved) document.documentElement.setAttribute('data-theme', saved);
+      document.documentElement.classList.toggle('dark', (saved || 'dark') === 'dark');
+    })();
+  </script>
+
+  <script>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('in');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -10% 0px' });
+
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+    document.addEventListener('astro:page-load', () => {
+      document.querySelectorAll('.fade-up:not(.in)').forEach(el => observer.observe(el));
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,216 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+
+const articles = [
+  { cat: 'Cerita Lapangan', date: '12 Mei 2026', read: '5 menit baca', title: 'Air Bersih untuk 300 Santri di Pelosok Garut', excerpt: 'Setelah sumur utama mengering selama musim kemarau panjang, armada kami menempuh 8 jam perjalanan ke Pesantren Darul Falah.', feature: true },
+  { cat: 'Edukasi', date: '8 Mei 2026', read: '4 menit', title: 'Mengapa Air Minum Bersih Itu Wakaf Terbaik', excerpt: 'Dari sabda Rasulullah tentang keutamaan memberi minum, hingga praktik sahabat menyumbangkan sumur Raumah.' },
+  { cat: 'Berita', date: '2 Mei 2026', read: '3 menit', title: 'Armada Kedua Resmi Beroperasi di Jawa Tengah', excerpt: 'Penambahan unit mobil karoseri kedua memperluas jangkauan pelayanan hingga ke Banyumas, Cilacap, dan sekitarnya.' },
+  { cat: 'Laporan', date: '28 Apr 2026', read: '6 menit', title: 'Laporan Triwulan Q1 2026: 18.000 Liter Tersalurkan', excerpt: 'Rekap distribusi, donatur aktif, dan dampak program selama Januari hingga Maret 2026.' },
+  { cat: 'Cerita Lapangan', date: '20 Apr 2026', read: '4 menit', title: 'Senyum Anak-anak TPA Masjid Al-Ikhlas', excerpt: 'Kunjungan rutin ke TPA di kawasan Klaten, dimana 80 anak rutin mengaji setiap sore selepas maghrib.' },
+  { cat: 'Edukasi', date: '14 Apr 2026', read: '5 menit', title: 'Standar Kualitas Air Minum Layak Konsumsi', excerpt: 'Bagaimana sistem RO multi-stage kami memastikan setiap liter air aman, jernih, dan bebas bakteri.' },
+];
+
+const grad: Record<string, string> = {
+  'Cerita Lapangan': 'linear-gradient(135deg, #0e7c8c 0%, #155e75 100%)',
+  'Edukasi': 'linear-gradient(135deg, #134e5b 0%, #061b27 100%)',
+  'Berita': 'linear-gradient(135deg, #0891b2 0%, #0e7490 100%)',
+  'Laporan': 'linear-gradient(135deg, #a07f3a 0%, #5d4a23 100%)',
+};
+
+const feature = articles.find(a => a.feature)!;
+const rest = articles.filter(a => a !== feature);
+const cats = ['Semua', 'Cerita Lapangan', 'Edukasi', 'Berita', 'Laporan'];
+---
+
+<Layout
+  title="Artikel & Cerita — Sedekah Air Minum"
+  description="Dokumentasi perjalanan, pelajaran dari penerima manfaat, dan kajian tentang keutamaan wakaf air dalam Islam."
+>
+  <Nav />
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <span class="page-hero__eyebrow">Artikel & Cerita</span>
+        <h1 class="page-hero__title">Kisah dari <em>lapangan</em>,<br/>edukasi untuk umat.</h1>
+        <p class="page-hero__intro">Dokumentasi perjalanan, pelajaran dari penerima manfaat, dan kajian tentang keutamaan wakaf air dalam Islam.</p>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top:24px">
+      <div class="container">
+        <div class="chip-group fade-up" style="margin-bottom:56px;justify-content:center">
+          {cats.map(c => (
+            <button class:list={['chip', { 'chip--active': c === 'Semua' }]} data-cat={c}>{c}</button>
+          ))}
+        </div>
+
+        <article class="article-card article-card--feature fade-up" style="margin-bottom:80px" data-article-cat={feature.cat}>
+          <div class="article-card__media" style={`background:${grad[feature.cat]};background-image:url(/assets/hero/DSC00529_4_11zon.webp);background-size:cover;background-position:center`}>
+            <span class="article-card__cat">{feature.cat}</span>
+          </div>
+          <div>
+            <div class="article-card__meta" style="margin-bottom:18px">
+              <span>{feature.date}</span><span>&middot;</span><span>{feature.read}</span>
+            </div>
+            <h2 class="article-card__title">{feature.title}</h2>
+            <p style="margin-top:16px;font-size:16px;color:var(--ink-muted);line-height:1.65">{feature.excerpt}</p>
+            <button class="btn btn--ghost" style="margin-top:32px">
+              Baca Selengkapnya
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </button>
+          </div>
+        </article>
+
+        <div class="article-grid" id="article-grid">
+          {rest.map((a, i) => (
+            <article class="article-card fade-up" style={`transition-delay:${i * 60}ms`} data-article-cat={a.cat}>
+              <div class="article-card__media" style={`background:${grad[a.cat]}`}>
+                <span class="article-card__cat">{a.cat}</span>
+              </div>
+              <div class="article-card__meta">
+                <span>{a.date}</span><span>&middot;</span><span>{a.read}</span>
+              </div>
+              <h3 class="article-card__title">{a.title}</h3>
+              <p class="article-card__excerpt">{a.excerpt}</p>
+            </article>
+          ))}
+        </div>
+
+        <section class="section">
+          <div class="container container--narrow">
+            <div class="cta-banner fade-up" style="grid-template-columns:1fr;text-align:center">
+              <div>
+                <span class="eyebrow" style="justify-content:center">Newsletter</span>
+                <h2 class="cta-banner__title" style="margin-top:16px;margin-bottom:16px;text-align:center">Dapatkan kisah <em>baru</em> setiap pekan.</h2>
+                <p class="cta-banner__desc" style="text-align:center;margin:0 auto">Berlangganan newsletter untuk cerita lapangan, laporan triwulan, dan kajian seputar wakaf air.</p>
+                <form class="newsletter-form" style="max-width:480px;margin:32px auto 0;display:grid;grid-template-columns:1fr auto;gap:8px;padding:8px;background:var(--bg);border:1px solid var(--border);border-radius:999px" onsubmit="event.preventDefault()">
+                  <input style="background:transparent;border:none;outline:none;padding:0 22px;font-size:15px;color:var(--ink)" placeholder="Alamat email Anda" type="email" />
+                  <button type="submit" class="btn btn--primary btn--sm" style="height:48px;padding-inline:22px">Berlangganan</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .page-hero {
+    padding-top: 180px;
+    padding-bottom: 96px;
+    text-align: center;
+  }
+  .page-hero__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--aqua);
+    margin-bottom: 24px;
+  }
+  .page-hero__eyebrow::before, .page-hero__eyebrow::after {
+    content: "";
+    width: 24px;
+    height: 1px;
+    background: currentColor;
+  }
+  .page-hero__title {
+    font-family: var(--font-display);
+    font-size: clamp(48px, 7vw, 88px);
+    font-weight: 400;
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    margin: 0 0 24px;
+  }
+  .page-hero__title em { font-style: italic; color: var(--aqua); }
+  .page-hero__intro {
+    font-size: clamp(16px, 1.3vw, 19px);
+    color: var(--ink-muted);
+    max-width: 62ch;
+    margin: 0 auto;
+    line-height: 1.65;
+  }
+  .article-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+  .article-card { display: flex; flex-direction: column; gap: 20px; cursor: pointer; transition: transform 0.4s var(--ease-out); }
+  .article-card:hover { transform: translateY(-4px); }
+  .article-card__media {
+    aspect-ratio: 4 / 3;
+    border-radius: var(--r-md);
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    background-color: var(--surface-2);
+  }
+  .article-card__media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 60%, rgba(0,0,0,0.4)); }
+  .article-card__cat {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(8px);
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    z-index: 2;
+  }
+  .article-card__meta { display: flex; gap: 16px; font-size: 12px; color: var(--ink-muted); letter-spacing: 0.04em; }
+  .article-card__title { font-family: var(--font-display); font-size: 24px; font-weight: 400; line-height: 1.2; color: var(--ink-strong); }
+  .article-card:hover .article-card__title { color: var(--aqua); }
+  .article-card__excerpt { font-size: 14px; color: var(--ink-muted); line-height: 1.6; }
+  .article-card--feature {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 56px;
+    align-items: center;
+  }
+  .article-card--feature .article-card__media { aspect-ratio: 5 / 4; }
+  .article-card--feature .article-card__title { font-size: clamp(28px, 3.4vw, 44px); }
+  .chip-group { display: flex; gap: 6px; flex-wrap: wrap; }
+  .chip {
+    padding: 10px 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-size: 13px;
+    color: var(--ink-muted);
+    cursor: pointer;
+    transition: all 0.25s var(--ease-out);
+  }
+  .chip:hover { color: var(--ink); }
+  .chip--active { background: var(--aqua); color: #03222a; border-color: var(--aqua); }
+  @media (max-width: 1080px) {
+    .article-grid { grid-template-columns: 1fr 1fr; }
+    .article-card--feature { grid-template-columns: 1fr; gap: 28px; }
+  }
+  @media (max-width: 640px) {
+    .article-grid { grid-template-columns: 1fr; }
+  }
+</style>
+
+<script>
+  const catBtns = document.querySelectorAll('[data-cat]');
+  const allCards = document.querySelectorAll('[data-article-cat]') as NodeListOf<HTMLElement>;
+
+  catBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      catBtns.forEach(b => b.classList.remove('chip--active'));
+      btn.classList.add('chip--active');
+      const cat = (btn as HTMLElement).dataset.cat || 'Semua';
+      allCards.forEach(card => {
+        card.style.display = (cat === 'Semua' || card.dataset.articleCat === cat) ? '' : 'none';
+      });
+    });
+  });
+</script>
