@@ -103,10 +103,27 @@ const links = [
 </aside>
 
 <style>
-  /* Icon toggle */
-  .icon-moon { display: none; }
-  :global([data-theme="light"]) .icon-sun { display: none; }
-  :global([data-theme="light"]) .icon-moon { display: block; }
+  /* Icon toggle with animation */
+  .icon-sun, .icon-moon {
+    position: absolute;
+    transition: transform 0.4s var(--ease-out), opacity 0.4s var(--ease-out);
+  }
+  .icon-sun {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
+  .icon-moon {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.5);
+  }
+  :global([data-theme="light"]) .icon-sun {
+    opacity: 0;
+    transform: rotate(90deg) scale(0.5);
+  }
+  :global([data-theme="light"]) .icon-moon {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
 
   .nav__logo { height: 44px; width: auto; object-fit: contain; }
   .nav__desktop-only { display: flex; }
@@ -260,7 +277,14 @@ const links = [
     width: 100%;
   }
   .sidebar__theme-row:hover { border-color: var(--aqua); color: var(--aqua); }
-  .sidebar__theme-icon { display: flex; align-items: center; }
+  .sidebar__theme-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 18px;
+    height: 18px;
+  }
   .sidebar__cta {
     width: 100%;
     justify-content: center;
@@ -350,7 +374,7 @@ const links = [
     html.classList.toggle('dark', next === 'dark');
     localStorage.setItem('sam-theme', next);
     updateThemeLabel();
-    setTimeout(() => html.classList.remove('theme-transitioning'), 700);
+    setTimeout(() => html.classList.remove('theme-transitioning'), 600);
   }
 
   document.getElementById('theme-toggle-desktop')?.addEventListener('click', toggleTheme);

@@ -1,5 +1,5 @@
 import { Map, MapMarker, MarkerContent, MarkerTooltip, MapControls } from "@/components/ui/map";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 const distributionPoints = [
   { lng: 110.662, lat: -7.932, name: "PP An-Nur", alamat: "Ds Karangmojo, Kec. Karangmojo", galon: 6 },
@@ -37,33 +37,11 @@ function useTheme() {
   return theme;
 }
 
-function hideSkeleton() {
-  var skel = document.getElementById('map-skeleton');
-  if (skel) skel.style.display = 'none';
-}
-
 export default function IndonesiaMapComponent() {
   const theme = useTheme();
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    // Hide skeleton as soon as React mounts — map container exists
-    hideSkeleton();
-    if (containerRef.current) {
-      containerRef.current.style.opacity = '1';
-    }
-  }, []);
 
   return (
-    <div
-      ref={containerRef}
-      style={{
-        height: "100%", width: "100%",
-        borderRadius: "var(--r-lg)", overflow: "hidden",
-        opacity: 0,
-        transition: "opacity 0.6s ease",
-      }}
-    >
+    <div style={{ height: "100%", width: "100%", borderRadius: "var(--r-lg)", overflow: "hidden" }}>
       <Map
         theme={theme}
         center={[110.58, -7.955]}

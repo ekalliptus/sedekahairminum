@@ -11,15 +11,7 @@ import IndonesiaMap from './IndonesiaMap';
         Lihat sebaran lembaga penerima manfaat — dari Aceh hingga Papua. Setiap titik mewakili masjid, pesantren, atau sekolah yang telah tersentuh program.
       </p>
     </div>
-    <div class="fade-up map-wrapper">
-      <div class="skeleton skeleton-map" id="map-skeleton">
-        <div class="skeleton-map__dots">
-          <span class="skeleton-map__dot"></span>
-          <span class="skeleton-map__dot"></span>
-          <span class="skeleton-map__dot"></span>
-        </div>
-        <span class="skeleton-map__label">Memuat peta distribusi...</span>
-      </div>
+    <div class="fade-up map-wrapper" id="map-wrapper">
       <IndonesiaMap client:only="react" />
     </div>
     <div class="map-legend fade-up">
@@ -38,18 +30,7 @@ import IndonesiaMap from './IndonesiaMap';
     background: var(--bg-elev);
     position: relative;
   }
-  .map-wrapper :global(.relative) {
-    position: relative;
-    z-index: 2;
-  }
-  .skeleton-map {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-  }
   @media (max-width: 640px) {
-    .map-wrapper {
-      aspect-ratio: 4 / 3;
-    }
+    .map-wrapper { aspect-ratio: 4 / 3; }
   }
 </style>

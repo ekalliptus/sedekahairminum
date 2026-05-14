@@ -75,18 +75,22 @@
 html, body { margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 
-html.theme-transitioning,
-html.theme-transitioning *,
-html.theme-transitioning *::before,
-html.theme-transitioning *::after {
-  transition: background-color 0.5s var(--ease-out),
-              background 0.5s var(--ease-out),
-              color 0.5s var(--ease-out),
-              border-color 0.5s var(--ease-out),
-              box-shadow 0.5s var(--ease-out),
-              fill 0.5s var(--ease-out),
-              stroke 0.5s var(--ease-out),
-              opacity 0.5s var(--ease-out) !important;
+html.theme-transitioning body,
+html.theme-transitioning .nav,
+html.theme-transitioning .footer,
+html.theme-transitioning .surface,
+html.theme-transitioning .statstrip,
+html.theme-transitioning .map-section,
+html.theme-transitioning .testimonial,
+html.theme-transitioning .cta-banner,
+html.theme-transitioning .form,
+html.theme-transitioning .sidebar,
+html.theme-transitioning .table,
+html.theme-transitioning .sidebar-overlay {
+  transition: background-color 0.4s var(--ease-out), border-color 0.4s var(--ease-out), box-shadow 0.4s var(--ease-out) !important;
+}
+html.theme-transitioning body::before {
+  transition: opacity 0.4s var(--ease-out) !important;
 }
 
 body {
@@ -347,17 +351,28 @@ p { margin: 0; text-wrap: pretty; }
   height: 40px;
   border-radius: 50%;
   border: 1px solid var(--border-strong);
-  display: grid;
-  place-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
   cursor: pointer;
-  transition: border-color 0.3s var(--ease-out), color 0.3s var(--ease-out), background-color 0.3s var(--ease-out);
-  transform: none;
+  transition: border-color 0.3s var(--ease-out), color 0.3s var(--ease-out), background-color 0.3s var(--ease-out), transform 0.3s var(--ease-out);
+  flex-shrink: 0;
 }
 .theme-toggle:hover {
   border-color: var(--aqua);
   color: var(--aqua);
+  transform: scale(1.08);
 }
-.theme-toggle svg { width: 18px; height: 18px; }
+.theme-toggle:active {
+  transform: scale(0.92);
+}
+.theme-toggle svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  display: block;
+}
 
 
 .hero {
