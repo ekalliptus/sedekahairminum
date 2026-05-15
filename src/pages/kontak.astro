@@ -144,7 +144,13 @@ const rekening = [
             <div class="rek-card fade-up">
               <div class="rek-label-corner">{r.label}</div>
               <div style="font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--ink-dim)">{r.bank}</div>
-              <div style="font-family:var(--font-mono);font-size:22px;margin-top:14px;color:var(--ink-strong);letter-spacing:0.04em">{r.no}</div>
+              <div class="rek-number">
+                <span style="font-family:var(--font-mono);font-size:22px;color:var(--ink-strong);letter-spacing:0.04em">{r.no}</span>
+                <button class="rek-copy" data-copy={r.no} aria-label={`Salin nomor rekening ${r.label}`} type="button">
+                  <svg class="rek-copy__icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  <svg class="rek-copy__check" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M20 6L9 17l-5-5"/></svg>
+                </button>
+              </div>
               <div style="margin-top:14px;font-size:13px;color:var(--ink-muted)">a.n. Yayasan Sedekah Air Minum</div>
             </div>
           ))}
@@ -227,10 +233,52 @@ const rekening = [
     .contact-grid { grid-template-columns: 1fr; gap: 40px; }
     .rek-grid { grid-template-columns: 1fr; }
   }
+  .rek-number {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 14px;
+  }
+  .rek-copy {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--r-xs);
+    border: 1px solid var(--border-strong);
+    display: grid;
+    place-items: center;
+    color: var(--ink-muted);
+    cursor: pointer;
+    transition: all 0.25s var(--ease-out);
+    flex-shrink: 0;
+    background: none;
+  }
+  .rek-copy:hover { border-color: var(--aqua); color: var(--aqua); }
+  .rek-copy.copied { border-color: #7fe9c4; color: #7fe9c4; }
   @media (max-width: 640px) {
     .form__row--double { grid-template-columns: 1fr; }
+    .rek-number span { font-size: 18px !important; }
   }
 </style>
+
+<script is:inline>
+  document.querySelectorAll('.rek-copy').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var no = btn.dataset.copy;
+      navigator.clipboard.writeText(no).then(function() {
+        var icon = btn.querySelector('.rek-copy__icon');
+        var check = btn.querySelector('.rek-copy__check');
+        btn.classList.add('copied');
+        icon.style.display = 'none';
+        check.style.display = 'block';
+        setTimeout(function() {
+          btn.classList.remove('copied');
+          icon.style.display = 'block';
+          check.style.display = 'none';
+        }, 2000);
+      });
+    });
+  });
+</script>
 
 <script is:inline>
   var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxJde3L1B6syeq_ZTMIoDlcawB0fq_wum3rsWa-YXB6CqOCMAOWoyX16G8st7YHBP7O/exec';

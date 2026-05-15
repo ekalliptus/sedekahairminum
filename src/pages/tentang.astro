@@ -19,9 +19,9 @@ const milestones = [
 ];
 
 const team = [
-  { name: '', role: 'Founder & Direktur', initials: '?' },
-  { name: '', role: 'Operasional Armada', initials: '?' },
-  { name: '', role: 'Donor Relations', initials: '?' },
+  { role: 'Founder & Direktur', avatar: 'https://api.dicebear.com/9.x/notionists/svg?seed=founder&backgroundColor=b6e3f4' },
+  { role: 'Operasional Armada', avatar: 'https://api.dicebear.com/9.x/notionists/svg?seed=operasional&backgroundColor=c0aede' },
+  { role: 'Donor Relations', avatar: 'https://api.dicebear.com/9.x/notionists/svg?seed=donor&backgroundColor=d1d4f9' },
 ];
 
 const misi = [
@@ -104,9 +104,10 @@ const misi = [
         <div class="team-grid fade-up">
           {team.map(m => (
             <div class="member">
-              <div class="member__photo"><span class="member__initials">{m.initials}</span></div>
+              <div class="member__photo">
+                <img src={m.avatar} alt={m.role} style="width:100%;height:100%;object-fit:cover" loading="lazy" />
+              </div>
               <div>
-                <h3 class="member__name">{m.name}</h3>
                 <div class="member__role">{m.role}</div>
               </div>
             </div>
