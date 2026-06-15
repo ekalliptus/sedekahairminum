@@ -17,6 +17,10 @@ function applySecurityHeaders(response: Response, path: string): Response {
   return response;
 }
 
+// Marketing routes served as SSR with a short edge cache so edits appear
+// within ~1 minute without a manual rebuild, while TTFB stays fast.
+const MARKETING_CACHE = ['/', '/tentang', '/penerima', '/kontak'];
+
 export const onRequest = defineMiddleware(async (context, next) => {
   const { cookies, locals, url, redirect, request } = context;
   const runtimeEnv = locals.runtime?.env as Record<string, string> | undefined;
@@ -25,7 +29,9 @@ export const onRequest = defineMiddleware(async (context, next) => {
   const needsAuth = path.startsWith('/admin') && path !== '/admin/login';
   const isLogin = path === '/admin/login';
   const isApi = path.startsWith('/api/');
-  const isSsr = needsAuth || isLogin || isApi
+  // SSR scope: admin, api, blog, feeds, AND marketing (auto-update from CMS).
+  const isMarketing = MARKETING_CACHE.includes(path);
+  const isSsr = needsAuth || isLogin || isApi || isMarketing
     || path.startsWith('/artikel') || path.startsWith('/rss') || path.startsWith('/sitemap-articles');
 
   const { url: supaUrl, anonKey } = publicEnv(runtimeEnv);
@@ -68,5 +74,10 @@ export const onRequest = defineMiddleware(async (context, next) => {
   }
 
   const response = await next();
+  // Edge cache for marketing: short s-maxage so edits appear within ~1 min
+  // without a rebuild, stale-while-revalidate keeps TTFB fast.
+  if (isMarketing) {
+    response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=300');
+  }
   return applySecurityHeaders(response, path);
 });

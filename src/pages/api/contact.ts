@@ -4,6 +4,12 @@ import { z } from 'zod';
 import { ok, badRequest, serverError, clientIp } from '@/lib/api';
 import { createSupabaseAdmin } from '@/lib/supabase/admin';
 
+// Google Apps Script webhook for the legacy Google Sheet. Submissions are
+// written to BOTH Supabase (contact_submissions, source of truth for the
+// dashboard inbox) and this Sheet (kept for backward compatibility).
+const APPS_SCRIPT_URL =
+  'https://script.google.com/macros/s/AKfycbxJde3L1B6syeq_ZTMIoDlcawB0fq_wum3rsWa-YXB6CqOCMAOWoyX16G8st7YHBP7O/exec';
+
 const MAX_NAMA = 120;
 const MAX_PHONE = 32;
 const MAX_EMAIL = 254;
@@ -37,6 +43,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
   const ip = clientIp(request);
   const ua = request.headers.get('user-agent') ?? null;
 
+  // 1) Source of truth: Supabase contact_submissions.
   const { error } = await admin.from('contact_submissions').insert({
     nama: payload.nama,
     phone: payload.phone,
@@ -49,5 +56,31 @@ export const POST: APIRoute = async ({ request, locals }) => {
   } as never);
 
   if (error) return serverError(error.message);
+
+  // 2) Mirror to Google Sheet (legacy). Fire-and-forget, no-cors so the Apps
+  //    Script web app accepts the POST. Jakarta timezone matches the sheet.
+  const tanggal = new Date().toLocaleString('sv-SE', {
+    timeZone: 'Asia/Jakarta',
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', second: '2-digit',
+  });
+  const body = new URLSearchParams({
+    nama: payload.nama,
+    phone: payload.phone,
+    email: payload.email || '',
+    topik: payload.topik || '',
+    pesan: payload.pesan,
+    tanggal,
+  });
+  try {
+    await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      body,
+      headers: { 'content-type': 'application/x-www-form-urlencoded' },
+    });
+  } catch {
+    // Sheet mirror is best-effort; don't fail the user-facing response.
+  }
+
   return ok();
 };

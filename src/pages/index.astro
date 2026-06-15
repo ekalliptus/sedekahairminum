@@ -1,4 +1,5 @@
 ---
+export const prerender = false;
 import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Hero from '../components/Hero.astro';
@@ -10,18 +11,18 @@ import Testimonials from '../components/Testimonials.astro';
 import FAQ from '../components/FAQ.astro';
 import CTABanner from '../components/CTABanner.astro';
 import Footer from '../components/Footer.astro';
-import { supabaseStatic } from '@/lib/supabase/static';
 import { getHeroSlides, getStats, getFeatures, getProgramSlides, getGallery, getTestimonials, getFaqs, getPenerima } from '@/lib/supabase/queries/marketing';
 
+const supabase = Astro.locals.supabase;
 const [heroSlides, homeStats, features, programSlides, gallery, testimonials, faqs, penerima] = await Promise.all([
-  getHeroSlides(supabaseStatic),
-  getStats(supabaseStatic, 'home'),
-  getFeatures(supabaseStatic),
-  getProgramSlides(supabaseStatic),
-  getGallery(supabaseStatic),
-  getTestimonials(supabaseStatic),
-  getFaqs(supabaseStatic),
-  getPenerima(supabaseStatic),
+  getHeroSlides(supabase),
+  getStats(supabase, 'home'),
+  getFeatures(supabase),
+  getProgramSlides(supabase),
+  getGallery(supabase),
+  getTestimonials(supabase),
+  getFaqs(supabase),
+  getPenerima(supabase),
 ]);
 
 const mapPoints = penerima

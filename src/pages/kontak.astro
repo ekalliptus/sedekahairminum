@@ -1,11 +1,12 @@
 ---
+export const prerender = false;
 import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
-import { supabaseStatic } from '@/lib/supabase/static';
 import { getRekening } from '@/lib/supabase/queries/marketing';
 
-const rekening = await getRekening(supabaseStatic);
+const supabase = Astro.locals.supabase;
+const rekening = await getRekening(supabase);
 ---
 
 <Layout

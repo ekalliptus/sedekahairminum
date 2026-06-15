@@ -138,8 +138,18 @@ const ogImageUrl = ogImage || `${siteUrl}/assets/hero/DSC00529_4_11zon.webp`;
     @import '../styles/global.css';
     @import '../styles/tailwind.css';
   </style>
+
+  <!-- Navigation loading bar: shows while an SSR page is being requested
+       (cache miss). Instant on cache hit. -->
+  <style is:inline>
+    #nav-loader{position:fixed;top:0;left:0;height:2px;width:0;background:var(--aqua);
+      box-shadow:0 0 8px var(--aqua);z-index:9999;opacity:0;transition:opacity .2s}
+    #nav-loader.show{opacity:1;animation:navload 1.2s ease-out forwards}
+    @keyframes navload{0%{width:0}50%{width:70%}100%{width:100%}}
+  </style>
 </head>
 <body>
+  <div id="nav-loader"></div>
   <a href="#main-content" class="skip-link">Langsung ke konten</a>
   <slot />
 
@@ -158,6 +168,27 @@ const ogImageUrl = ogImage || `${siteUrl}/assets/hero/DSC00529_4_11zon.webp`;
     document.addEventListener('astro:page-load', () => {
       document.querySelectorAll('.fade-up:not(.in)').forEach(el => observer.observe(el));
     });
+
+    // Navigation loading bar: trigger on internal link clicks, hide when page loads.
+    (function () {
+      const loaderEl = document.getElementById('nav-loader');
+      if (!loaderEl) return;
+      const loader = loaderEl;
+      function show() { loader.classList.remove('show'); void loader.offsetWidth; loader.classList.add('show'); }
+      function hide() { loader.classList.remove('show'); }
+      document.addEventListener('click', (e) => {
+        const a = (e.target as HTMLElement)?.closest('a');
+        if (!a) return;
+        const href = a.getAttribute('href');
+        if (!href || href.startsWith('#') || href.startsWith('http') || href.startsWith('mailto:') || href.startsWith('tel:') || a.target === '_blank') return;
+        if (a.hasAttribute('download')) return;
+        if (href === window.location.href || href === window.location.pathname) return;
+        show();
+      });
+      window.addEventListener('load', hide);
+      document.addEventListener('astro:page-load', hide);
+      setTimeout(hide, 3000);
+    })();
   </script>
 </body>
 </html>

@@ -1,14 +1,15 @@
 ---
+export const prerender = false;
 import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
-import { supabaseStatic } from '@/lib/supabase/static';
 import { getValues, getTeam, getMisi } from '@/lib/supabase/queries/marketing';
 
+const supabase = Astro.locals.supabase;
 const [values, team, misi] = await Promise.all([
-  getValues(supabaseStatic),
-  getTeam(supabaseStatic),
-  getMisi(supabaseStatic),
+  getValues(supabase),
+  getTeam(supabase),
+  getMisi(supabase),
 ]);
 ---
 
