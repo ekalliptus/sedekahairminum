@@ -28,7 +28,7 @@ function formatDate(iso: string | null): string {
   return new Intl.DateTimeFormat('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(iso));
 }
 
-const authorName = (article as any).author?.full_name || 'Sedekah Air Minum';
+const authorName = article.author_name || 'Sedekah Air Minum';
 const categoryName = (article as any).category?.name;
 const tags = ((article as any).article_tags ?? []).map((at: any) => at.tag);
 ---

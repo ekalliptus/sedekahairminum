@@ -53,21 +53,35 @@ export async function listPublishedArticles(
   };
 }
 
-export async function getArticleBySlug(client: DB, slug: string) {
+export interface FullArticle extends Database['public']['Tables']['articles']['Row'] {
+  category: { name: string; slug: string } | null;
+  article_tags: { tag: { name: string; slug: string } | null }[];
+  author_name: string;
+}
+
+export async function getArticleBySlug(client: DB, slug: string): Promise<FullArticle | null> {
+  // No direct FK from articles.author_id → profiles, so fetch article + author separately.
   const { data } = await client
     .from('articles')
-    .select(
-      '*, category:categories(name,slug), article_tags(tag:tags(name,slug)), author:profiles(full_name,avatar_url)',
-    )
+    .select('*, category:categories(name,slug), article_tags(tag:tags(name,slug))')
     .eq('slug', slug)
     .eq('status', 'published')
     .lte('published_at', nowIso())
     .maybeSingle();
-  return data as (Database['public']['Tables']['articles']['Row'] & {
-    category: { name: string; slug: string } | null;
-    article_tags: { tag: { name: string; slug: string } | null }[];
-    author: { full_name: string; avatar_url: string | null } | null;
-  }) | null;
+  if (!data) return null;
+  const row = data as unknown as FullArticle;
+  // Resolve author name from profiles if author_id is set.
+  if (row.author_id) {
+    const { data: profile } = await client
+      .from('profiles')
+      .select('full_name')
+      .eq('id', row.author_id)
+      .maybeSingle();
+    row.author_name = (profile as any)?.full_name || 'Sedekah Air Minum';
+  } else {
+    row.author_name = 'Sedekah Air Minum';
+  }
+  return row;
 }
 
 export async function getRelatedArticles(
