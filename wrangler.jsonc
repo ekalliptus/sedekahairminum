@@ -6,7 +6,7 @@
   "account_id": "7f5c79c19bc6cb7cbda4500d1e5b615e",
   "compatibility_date": "2025-05-01",
   // Required: @supabase/* pull in Node builtins (stream, events, crypto).
-  "compatibility_flags": ["nodejs_compat"],
+  "compatibility_flags": ["nodejs_compat_v2"],
   // Custom worker entry adds a scheduled() cron handler alongside Astro's fetch.
   "main": "./dist/_worker.js/index.js",
   "assets": {
