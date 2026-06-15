@@ -7,7 +7,6 @@ import {
 import { Icon } from './icon';
 import KeepAliveWidget from './KeepAliveWidget';
 import ActivityFeed from './ActivityFeed';
-import { createSupabaseBrowser } from '@/lib/supabase/browser';
 import type { ActivityEntry } from '@/lib/supabase/types';
 
 interface Props {
@@ -25,25 +24,26 @@ const STAT_CARDS: { key: string; label: string; icon: string; href: string }[] =
 
 export default function DashboardHome({ recent, lastHeartbeat, counts }: Props) {
   const [showUpdate, setShowUpdate] = React.useState(false);
-  const latestIdRef = React.useRef<string | null>(recent[0]?.id ?? null);
+  const baselineRef = React.useRef<string | null>(recent[0]?.created_at ?? null);
 
   React.useEffect(() => {
-    const supabase = createSupabaseBrowser();
     let active = true;
     const check = async () => {
-      const { data } = await supabase
-        .from('activity_log')
-        .select('id')
-        .order('created_at', { ascending: false })
-        .limit(1);
-      if (!active) return;
-      const newest = (data as any)?.[0]?.id;
-      if (newest && latestIdRef.current && newest !== latestIdRef.current) {
-        setShowUpdate(true);
-      }
+      try {
+        const res = await fetch('/api/dashboard-version');
+        if (!res.ok) return;
+        const { ts } = (await res.json()) as { ts: string | null };
+        if (!active || !ts) return;
+        if (baselineRef.current && ts !== baselineRef.current) {
+          setShowUpdate(true);
+        }
+        if (!baselineRef.current) baselineRef.current = ts;
+      } catch { /* network error, skip */ }
     };
+    // First check after 10s, then every 30s.
+    const initial = setTimeout(check, 10_000);
     const handle = setInterval(check, 30_000);
-    return () => { active = false; clearInterval(handle); };
+    return () => { active = false; clearTimeout(initial); clearInterval(handle); };
   }, []);
 
   function handleRefresh() {
