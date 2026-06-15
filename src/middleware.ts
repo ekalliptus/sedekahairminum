@@ -14,13 +14,14 @@ export const onRequest = defineMiddleware(async (context, next) => {
   const needsAuth = path.startsWith('/admin') && path !== '/admin/login';
   const isLogin = path === '/admin/login';
   const isApi = path.startsWith('/api/');
-  const dynamic = needsAuth || isLogin || isApi;
+  // SSR routes that need a Supabase client (blog, RSS, sitemap, admin, API).
+  const isSsr = needsAuth || isLogin || isApi
+    || path.startsWith('/artikel') || path.startsWith('/rss') || path.startsWith('/sitemap-articles');
 
-  // Marketing pages are prerendered at build time and never need a request-bound
-  // Supabase client; building one with empty env throws. Only attach for dynamic
-  // routes, and only when credentials exist.
+  // Prerendered marketing pages never need a request-bound client. Skip when
+  // env is missing (fresh clone) or the route is static.
   const { url: supaUrl, anonKey } = publicEnv(runtimeEnv);
-  if (!dynamic || !supaUrl || !anonKey) {
+  if (!isSsr || !supaUrl || !anonKey) {
     return next();
   }
 
@@ -29,17 +30,20 @@ export const onRequest = defineMiddleware(async (context, next) => {
   locals.user = null;
   locals.role = null;
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  locals.user = user ?? null;
-  if (user) {
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .single<{ role: Role }>();
-    locals.role = profile?.role ?? null;
+  // Only check auth for admin / API routes (not public blog).
+  if (needsAuth || isLogin || isApi) {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    locals.user = user ?? null;
+    if (user) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .single<{ role: Role }>();
+      locals.role = profile?.role ?? null;
+    }
   }
 
   if (needsAuth && !locals.user) {
