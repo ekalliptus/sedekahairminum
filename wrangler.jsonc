@@ -28,8 +28,8 @@
   // `wrangler secret put <NAME>` (SUPABASE_SERVICE_ROLE_KEY, CF_DEPLOY_HOOK_URL,
   // CRON_SECRET) — never put secrets in this file.
   "vars": {
-    "PUBLIC_SUPABASE_URL": "",
-    "PUBLIC_SUPABASE_ANON_KEY": ""
+    "PUBLIC_SUPABASE_URL": "https://unhzhmecvixplssogimz.supabase.co",
+    "PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVuaHpobWVjdml4cGxzc29naW16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE1MDQ3NTMsImV4cCI6MjA5NzA4MDc1M30.oY4yftCHsWrWzzZHTuCFEfESfsj2m692AeDNIH9oI1A"
   },
   // Daily keep-alive ping at 03:07 UTC (off the :00 mark on purpose).
   "triggers": {
