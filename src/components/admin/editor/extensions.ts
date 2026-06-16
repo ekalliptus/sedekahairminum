@@ -4,7 +4,7 @@
 // syntax highlighting, and only add extensions NOT already in StarterKit.
 
 import StarterKit from '@tiptap/starter-kit';
-import Image from '@tiptap/extension-image';
+import { ResizableImage } from './ResizableImage';
 import Placeholder from '@tiptap/extension-placeholder';
 import TextAlign from '@tiptap/extension-text-align';
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
@@ -40,7 +40,7 @@ export function buildExtensions(placeholder = 'Tulis artikel di sini…'): AnyEx
       },
     }),
     CodeBlockLowlight.configure({ lowlight }),
-    Image.configure({ inline: false, allowBase64: false, HTMLAttributes: { loading: 'lazy' } }),
+    ResizableImage.configure({ inline: false, allowBase64: false, HTMLAttributes: { loading: 'lazy' } }),
     Placeholder.configure({ placeholder }),
     TextAlign.configure({ types: ['heading', 'paragraph'] }),
     Table.configure({ resizable: true }),
