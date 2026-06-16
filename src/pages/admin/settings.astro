@@ -10,5 +10,6 @@ const settings = await getSettings(Astro.locals.supabase);
   <SettingsForm client:load initial={{
     contact: settings.contact as any ?? {},
     social: settings.social as any ?? {},
+    about: settings.about as any ?? {},
   }} />
 </AdminLayout>

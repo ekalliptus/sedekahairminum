@@ -43,12 +43,14 @@ export const RESOURCES: Record<string, ResourceDef> = {
       { name: 'province', label: 'Kabupaten', type: 'text', required: true },
       { name: 'alamat', label: 'Alamat Lengkap', type: 'text' },
       { name: 'galon', label: 'Galon/Distribusi', type: 'number', required: true, listVisible: true },
-      { name: 'lat', label: 'Latitude', type: 'number' },
-      { name: 'lng', label: 'Longitude', type: 'number' },
+      { name: 'lat', label: 'Latitude (wajib agar muncul di peta beranda)', type: 'number', required: true },
+      { name: 'lng', label: 'Longitude (wajib agar muncul di peta beranda)', type: 'number', required: true },
       { name: 'status', label: 'Status', type: 'select', options: [{ label: 'Tersalurkan', value: 'tersalurkan' }, { label: 'Proses', value: 'proses' }, { label: 'Pengajuan', value: 'pengajuan' }, { label: 'Arsip', value: 'arsip' }] },
       { name: 'is_published', label: 'Tampilkan', type: 'boolean' },
     ],
-    schema: z.object({ name: z.string().min(1), type: z.enum(['Pesantren', 'Yayasan']), city: z.string().min(1), province: z.string().min(1), alamat: z.string().optional().default(''), galon: z.coerce.number().int().nonnegative(), lat: z.coerce.number().optional(), lng: z.coerce.number().optional(), status: z.string().optional().default('tersalurkan'), is_published: bool }),
+    // lat/lng required so a new beneficiary always appears on the home map (it
+    // reads the same penerima rows but drops any without coordinates).
+    schema: z.object({ name: z.string().min(1), type: z.enum(['Pesantren', 'Yayasan']), city: z.string().min(1), province: z.string().min(1), alamat: z.string().optional().default(''), galon: z.coerce.number().int().nonnegative(), lat: z.coerce.number({ message: 'Latitude wajib diisi' }).min(-90).max(90), lng: z.coerce.number({ message: 'Longitude wajib diisi' }).min(-180).max(180), status: z.string().optional().default('tersalurkan'), is_published: bool }),
   },
   testimonials: {
     slug: 'testimonials', table: 'testimonials', label: 'Testimoni', labelPlural: 'Testimoni', icon: 'quote',

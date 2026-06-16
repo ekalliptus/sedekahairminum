@@ -53,6 +53,7 @@ export const NAV_SECTIONS: NavSection[] = [
     label: 'Sistem',
     items: [
       { label: 'Pesan Masuk', href: '/admin/submissions', icon: 'inbox', adminOnly: true },
+      { label: 'Rank Math SEO', href: '/admin/seo', icon: 'search-check', adminOnly: true },
       { label: 'Pengaturan', href: '/admin/settings', icon: 'settings', adminOnly: true },
       { label: 'Pengguna', href: '/admin/users', icon: 'user-cog', adminOnly: true },
     ],

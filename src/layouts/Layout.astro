@@ -1,15 +1,25 @@
 ---
+import { getSeoSettings, buildTitle } from '@/lib/seo';
+
 interface Props {
   title: string;
   description: string;
   canonical?: string;
   ogImage?: string;
+  rawTitle?: boolean; // skip the global separator (article pages pass a fully-formed title)
 }
 
-const { title, description, canonical, ogImage } = Astro.props;
+const { title, description, canonical, ogImage, rawTitle = false } = Astro.props;
 const siteUrl = 'https://sedekahairminum.com';
+const seo = await getSeoSettings(Astro.locals?.supabase ?? null);
+
+const resolvedTitle = rawTitle ? title : buildTitle(title, seo);
+const finalDescription = description || seo.homepage_description;
 const canonicalUrl = canonical || new URL(Astro.url.pathname, siteUrl).href;
-const ogImageUrl = ogImage || `${siteUrl}/assets/hero/DSC00529_4_11zon.webp`;
+const ogImageUrl = ogImage || seo.default_og_image || `${siteUrl}/assets/hero/DSC00529_4_11zon.webp`;
+const robotsContent = seo.robots_index ? 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' : 'noindex, nofollow';
+const ga4Id = seo.ga4_id?.trim();
+const twitterHandle = seo.twitter_handle?.trim() || '';
 ---
 <!doctype html>
 <html lang="id" data-theme="dark" class="dark">
@@ -19,9 +29,17 @@ const ogImageUrl = ogImage || `${siteUrl}/assets/hero/DSC00529_4_11zon.webp`;
   <script is:inline>
     (function(){var s=localStorage.getItem('sam-theme');if(s){document.documentElement.setAttribute('data-theme',s);document.documentElement.classList.toggle('dark',s==='dark');}})();
   </script>
-  <title>{title}</title>
-  <meta name="description" content={description} />
+  <title>{resolvedTitle}</title>
+  <meta name="description" content={finalDescription} />
   <link rel="canonical" href={canonicalUrl} />
+
+  {/* Search-engine verification tags (Rank Math SEO settings). */}
+  {seo.gsc_verification?.trim() && (
+    <meta name="google-site-verification" content={seo.gsc_verification.trim()} />
+  )}
+  {seo.bing_verification?.trim() && (
+    <meta name="msvalidate.01" content={seo.bing_verification.trim()} />
+  )}
 
   <!-- Security -->
   <meta http-equiv="X-Content-Type-Options" content="nosniff" />
@@ -31,7 +49,7 @@ const ogImageUrl = ogImage || `${siteUrl}/assets/hero/DSC00529_4_11zon.webp`;
   <meta name="theme-color" content="#050d14" media="(prefers-color-scheme: dark)" />
   <meta name="theme-color" content="#f4f7f9" media="(prefers-color-scheme: light)" />
   <meta name="color-scheme" content="dark light" />
-  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+  <meta name="robots" content={robotsContent} />
   <meta name="author" content="Yayasan Gerakan Wakaf Sumur" />
   <meta name="publisher" content="Sedekah Air Minum" />
   <meta name="geo.region" content="ID-YO" />
@@ -43,8 +61,8 @@ const ogImageUrl = ogImage || `${siteUrl}/assets/hero/DSC00529_4_11zon.webp`;
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="id_ID" />
   <meta property="og:site_name" content="Sedekah Air Minum" />
-  <meta property="og:title" content={title} />
-  <meta property="og:description" content={description} />
+  <meta property="og:title" content={resolvedTitle} />
+  <meta property="og:description" content={finalDescription} />
   <meta property="og:url" content={canonicalUrl} />
   <meta property="og:image" content={ogImageUrl} />
   <meta property="og:image:width" content="1200" />
@@ -53,9 +71,17 @@ const ogImageUrl = ogImage || `${siteUrl}/assets/hero/DSC00529_4_11zon.webp`;
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content={title} />
-  <meta name="twitter:description" content={description} />
+  <meta name="twitter:title" content={resolvedTitle} />
+  <meta name="twitter:description" content={finalDescription} />
   <meta name="twitter:image" content={ogImageUrl} />
+  {twitterHandle && <meta name="twitter:site" content={twitterHandle} />}
+  {seo.facebook_app_id?.trim() && <meta property="fb:app_id" content={seo.facebook_app_id.trim()} />}
+
+  {/* Google Analytics 4 (Rank Math SEO settings) — only when a Measurement ID is set. */}
+  {ga4Id && <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${ga4Id}`}></script>}
+  {ga4Id && (
+    <script is:inline set:html={`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${ga4Id}');`} />
+  )}
 
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />

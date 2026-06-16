@@ -3,18 +3,23 @@ export const prerender = false;
 import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
-import { getValues, getTeam, getMisi } from '@/lib/supabase/queries/marketing';
+import { getValues, getTeam, getMisi, getSettings } from '@/lib/supabase/queries/marketing';
 
 const supabase = Astro.locals.supabase;
-const [values, team, misi] = await Promise.all([
+const [values, team, misi, settings] = await Promise.all([
   getValues(supabase),
   getTeam(supabase),
   getMisi(supabase),
+  getSettings(supabase),
 ]);
+
+// Visi is CMS-editable (Pengaturan → Visi); fall back to the original copy.
+const visiText = (settings.about as { visi?: string } | undefined)?.visi?.trim()
+  || 'Menjadi gerakan Sedekah Air Minum terbesar dan paling tepercaya di Indonesia, hadir untuk umat di mana pun mereka berada.';
 ---
 
 <Layout
-  title="Tentang Kami — Sedekah Air Minum"
+  title="Tentang Kami"
   description="Kenali visi, misi, nilai, dan perjalanan Sedekah Air Minum — gerakan wakaf air bersih untuk masjid, pesantren, dan lembaga pendidikan Islam di Indonesia."
 >
   <Nav />
@@ -35,7 +40,7 @@ const [values, team, misi] = await Promise.all([
           <div>
             <span class="eyebrow">Visi</span>
             <p style="font-family:var(--font-display);font-size:clamp(28px, 3.4vw, 42px);font-weight:400;line-height:1.2;margin-top:18px;color:var(--ink-strong);letter-spacing:-0.015em">
-              Menjadi gerakan Sedekah Air Minum <em class="italic-serif">terbesar</em> dan paling tepercaya di Indonesia, hadir untuk umat di mana pun mereka berada.
+              {visiText}
             </p>
           </div>
           <div>

@@ -31,6 +31,7 @@ export interface ArticleInitial {
   category_id: string | null;
   meta_title: string;
   meta_description: string;
+  focus_keyword: string;
   og_image: string;
   tag_ids: string[];
 }
@@ -63,9 +64,12 @@ export default function ArticleForm({ initial, categories, tags }: Props) {
   const [metaTitle, setMetaTitle] = React.useState(initial.meta_title);
   const [metaDesc, setMetaDesc] = React.useState(initial.meta_description);
   const [saving, setSaving] = React.useState(false);
-  const [focusKeyword, setFocusKeyword] = React.useState('');
+  const [focusKeyword, setFocusKeyword] = React.useState(initial.focus_keyword ?? '');
   const [contentText, setContentText] = React.useState('');
   const [contentHtml, setContentHtml] = React.useState('');
+  // Autosave indicator: 'idle' | 'saving' | 'saved' | 'error'
+  const [autosave, setAutosave] = React.useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
+  const lastAutosaveAt = React.useRef(0);
 
   const editorState = React.useRef<{ json: JSONContent | null; html: string; text: string }>({
     json: initial.content,
@@ -75,6 +79,19 @@ export default function ArticleForm({ initial, categories, tags }: Props) {
   const debounceRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
   const coverInputRef = React.useRef<HTMLInputElement>(null);
   const editorRef = React.useRef<EditorHandle>(null);
+
+  // base-ui Select resolves the trigger label from `items` BEFORE the dropdown
+  // is opened. Without it the trigger shows the raw value (e.g. a category UUID
+  // or "published") until first open. Build value→label maps once.
+  const statusItems = React.useMemo(
+    () => ({ draft: 'Draf', published: 'Terbit', scheduled: 'Terjadwal', archived: 'Arsip' }),
+    [],
+  );
+  const categoryItems = React.useMemo(() => {
+    const m: Record<string, string> = { [NO_CATEGORY]: 'Tanpa kategori' };
+    for (const c of categories) m[c.id] = c.name;
+    return m;
+  }, [categories]);
 
   function onTitleChange(value: string) {
     setTitle(value);
@@ -147,13 +164,16 @@ export default function ArticleForm({ initial, categories, tags }: Props) {
     }
   }
 
-  async function save(nextStatus?: ArticleStatus) {
+  // `silent`: autosave path — no toast spam, light status indicator instead.
+  // Returns true on success so callers (autosave, manual save) can react.
+  async function save(nextStatus?: ArticleStatus, opts: { silent?: boolean } = {}): Promise<boolean> {
+    const silent = opts.silent ?? false;
     const effectiveStatus = nextStatus ?? status;
     if (!title.trim()) {
-      toast.error('Judul wajib diisi');
-      return;
+      if (!silent) toast.error('Judul wajib diisi');
+      return false;
     }
-    setSaving(true);
+    if (!silent) setSaving(true); else setAutosave('saving');
     try {
       const res = await fetch('/api/articles/save', {
         method: 'POST',
@@ -172,28 +192,54 @@ export default function ArticleForm({ initial, categories, tags }: Props) {
           category_id: categoryId === NO_CATEGORY ? null : categoryId,
           meta_title: metaTitle || null,
           meta_description: metaDesc || null,
+          focus_keyword: focusKeyword || null,
           og_image: cover || null,
           tag_ids: tagIds,
         }),
       });
       const body = (await res.json()) as { ok: boolean; id?: string; slug?: string; error?: string };
       if (!body.ok) {
-        toast.error(body.error ?? 'Gagal menyimpan');
-        return;
+        if (!silent) toast.error(body.error ?? 'Gagal menyimpan');
+        else setAutosave('error');
+        return false;
       }
       setStatus(effectiveStatus);
-      toast.success(effectiveStatus === 'published' ? 'Artikel diterbitkan' : 'Tersimpan');
+      if (silent) {
+        setAutosave('saved');
+        lastAutosaveAt.current = Date.now();
+      } else {
+        toast.success(effectiveStatus === 'published' ? 'Artikel diterbitkan' : 'Tersimpan');
+      }
       // On first create, move to the edit URL so subsequent saves update.
       if (!initial.id && body.id) {
         window.history.replaceState(null, '', `/admin/articles/${body.id}`);
         initial.id = body.id;
       }
+      return true;
     } catch {
-      toast.error('Gagal menyimpan');
+      if (!silent) toast.error('Gagal menyimpan');
+      else setAutosave('error');
+      return false;
     } finally {
-      setSaving(false);
+      if (!silent) setSaving(false);
     }
   }
+
+  // Autosave: after the editor pauses, save the current state as a draft so the
+  // user never loses work if they forget to click "Simpan Draf". It never
+  // downgrades a published/scheduled article — only persists draft copies in the
+  // background. Triggered by any tracked field change; debounced 4s.
+  const AUTOSAVE_MS = 4000;
+  React.useEffect(() => {
+    // Nothing to autosave yet (no title = nothing meaningful), and never
+    // auto-downgrade an article that's already published/scheduled.
+    if (!initial.id && !title.trim()) return;
+    if (status === 'published' || status === 'scheduled') return;
+    const t = setTimeout(() => { void save('draft', { silent: true }); }, AUTOSAVE_MS);
+    return () => clearTimeout(t);
+    // editorState is a ref; contentText/contentHtml mirror it for dependency tracking.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [title, slug, excerpt, cover, status, categoryId, tagIds, metaTitle, metaDesc, focusKeyword, contentText, contentHtml, initial.id]);
 
   return (
     <div className="space-y-4">
@@ -204,6 +250,7 @@ export default function ArticleForm({ initial, categories, tags }: Props) {
           </a>
           <h1 className="text-xl font-semibold">{initial.id ? 'Edit Artikel' : 'Artikel Baru'}</h1>
           <Badge variant="outline" className="capitalize">{status}</Badge>
+          <AutosaveBadge state={autosave} />
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" onClick={() => save('draft')} disabled={saving}>
@@ -247,7 +294,7 @@ export default function ArticleForm({ initial, categories, tags }: Props) {
             <CardContent className="space-y-3">
               <div className="space-y-1.5">
                 <Label className="text-xs">Status</Label>
-                <Select value={status} onValueChange={(v: string | null) => { if (v) setStatus(v as ArticleStatus); }}>
+                <Select items={statusItems} value={status} onValueChange={(v: string | null) => { if (v) setStatus(v as ArticleStatus); }}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="draft">Draf</SelectItem>
@@ -309,7 +356,7 @@ export default function ArticleForm({ initial, categories, tags }: Props) {
             <CardContent className="space-y-3">
               <div className="space-y-1.5">
                 <Label className="text-xs">Kategori</Label>
-                <Select value={categoryId} onValueChange={(v: string | null) => setCategoryId(v ?? NO_CATEGORY)}>
+                <Select items={categoryItems} value={categoryId} onValueChange={(v: string | null) => setCategoryId(v ?? NO_CATEGORY)}>
                   <SelectTrigger><SelectValue placeholder="Pilih kategori" /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value={NO_CATEGORY}>Tanpa kategori</SelectItem>
@@ -395,3 +442,22 @@ export default function ArticleForm({ initial, categories, tags }: Props) {
     </div>
   );
 }
+
+// Compact autosave status shown next to the article status badge. Stays subtle
+// (no toasts) so background draft saves don't interrupt writing.
+function AutosaveBadge({ state }: { state: 'idle' | 'saving' | 'saved' | 'error' }) {
+  if (state === 'idle') return null;
+  const map = {
+    saving: { text: 'Menyimpan draf…', className: 'text-muted-foreground', icon: 'loader-circle', spin: true },
+    saved: { text: 'Draf tersimpan', className: 'text-emerald-500', icon: 'circle-check', spin: false },
+    error: { text: 'Gagal menyimpan draf', className: 'text-destructive', icon: 'circle-x', spin: false },
+  } as const;
+  const s = map[state];
+  return (
+    <span className={`inline-flex items-center gap-1 text-xs ${s.className}`}>
+      <Icon name={s.icon} className={`size-3.5 ${s.spin ? 'animate-spin' : ''}`} />
+      {s.text}
+    </span>
+  );
+}
+

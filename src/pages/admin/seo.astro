@@ -1,0 +1,11 @@
+---
+export const prerender = false;
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import SeoForm from '@/components/admin/seo/SeoForm';
+import { getSeoSettings } from '@/lib/seo';
+
+const seo = await getSeoSettings(Astro.locals.supabase);
+---
+<AdminLayout title="Rank Math SEO">
+  <SeoForm client:load initial={seo} />
+</AdminLayout>

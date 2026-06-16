@@ -28,18 +28,23 @@ const [heroSlides, homeStats, features, programSlides, gallery, testimonials, fa
 const mapPoints = penerima
   .filter(p => p.lat != null && p.lng != null)
   .map(p => ({ lng: p.lng!, lat: p.lat!, name: p.name, alamat: p.alamat ?? '', galon: p.galon }));
+
+// Legend counts derived from data (was hardcoded "19 lembaga · 298 galon").
+const penerimaCount = penerima.length;
+const galonTotal = penerima.reduce((sum, p) => sum + (p.galon ?? 0), 0);
 ---
 
 <Layout
   title="Sedekah Air Minum — Gerakan Wakaf Air Bersih untuk Indonesia"
+  rawTitle
   description="Wakaf air bersih untuk masjid, pesantren, dan lembaga pendidikan Islam di seluruh Indonesia. Sedekah jariyah yang terus mengalir."
 >
-  <Nav />
+  <Nav overHero />
   <main id="main-content">
     <Hero slides={heroSlides} />
     <StatStrip stats={homeStats} />
     <Features features={features} programSlides={programSlides} />
-    <Map points={mapPoints} />
+    <Map points={mapPoints} penerimaCount={penerimaCount} galonTotal={galonTotal} />
     <Gallery slides={gallery} />
     <Testimonials testimonials={testimonials} />
     <FAQ faqs={faqs} />

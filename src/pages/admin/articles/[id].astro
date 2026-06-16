@@ -27,6 +27,7 @@ const initial: ArticleInitial = {
   category_id: article.category_id,
   meta_title: article.meta_title ?? '',
   meta_description: article.meta_description ?? '',
+  focus_keyword: article.focus_keyword ?? '',
   og_image: article.og_image ?? '',
   tag_ids: (artTags ?? []).map((t: any) => t.tag_id),
 };

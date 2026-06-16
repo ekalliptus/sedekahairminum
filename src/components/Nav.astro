@@ -1,4 +1,12 @@
 ---
+// `overHero`: the page has a dark, full-bleed hero directly under the nav (the
+// home page). Only then should the un-scrolled nav use white text. Inner pages
+// have a light background under the nav, so they keep the readable default
+// colors (--ink-muted) instead of white-on-white.
+interface Props {
+  overHero?: boolean;
+}
+const { overHero = false } = Astro.props;
 const currentPath = Astro.url.pathname;
 const links = [
   { href: '/', label: 'Beranda' },
@@ -9,7 +17,7 @@ const links = [
 ];
 ---
 
-<header class="nav" id="main-nav">
+<header class:list={['nav', { 'nav--over-hero': overHero }]} id="main-nav">
   <div class="container">
     <div class="nav__inner">
       <a href="/" class="nav__brand" aria-label="Sedekah Air Minum — Beranda">
@@ -302,24 +310,26 @@ const links = [
   }
   .sidebar__footer a { color: var(--aqua); }
 
-  /* Nav over hero (not scrolled) — force light colors for visibility */
-  :global([data-theme="light"]) :global(.nav:not(.nav--scrolled)) .nav__hamburger {
+  /* Nav over a dark hero (not scrolled) — force light colors for visibility.
+     Scoped to .nav--over-hero so inner pages (light bg under the nav) keep the
+     readable default link colors instead of white-on-white. */
+  :global([data-theme="light"]) :global(.nav--over-hero:not(.nav--scrolled)) .nav__hamburger {
     border-color: rgba(255,255,255,0.4);
   }
-  :global([data-theme="light"]) :global(.nav:not(.nav--scrolled)) .nav__hamburger-line {
+  :global([data-theme="light"]) :global(.nav--over-hero:not(.nav--scrolled)) .nav__hamburger-line {
     background: #fff;
   }
-  :global([data-theme="light"]) :global(.nav:not(.nav--scrolled)) .nav__desktop-only.theme-toggle {
+  :global([data-theme="light"]) :global(.nav--over-hero:not(.nav--scrolled)) .nav__desktop-only.theme-toggle {
     border-color: rgba(255,255,255,0.4);
     color: #fff;
   }
-  :global([data-theme="light"]) :global(.nav:not(.nav--scrolled)) :global(.nav__link) {
+  :global([data-theme="light"]) :global(.nav--over-hero:not(.nav--scrolled)) :global(.nav__link) {
     color: rgba(255,255,255,0.7);
   }
-  :global([data-theme="light"]) :global(.nav:not(.nav--scrolled)) :global(.nav__link:hover) {
+  :global([data-theme="light"]) :global(.nav--over-hero:not(.nav--scrolled)) :global(.nav__link:hover) {
     color: #fff;
   }
-  :global([data-theme="light"]) :global(.nav:not(.nav--scrolled)) :global(.nav__link--active) {
+  :global([data-theme="light"]) :global(.nav--over-hero:not(.nav--scrolled)) :global(.nav__link--active) {
     color: #5ee4f0;
   }
 

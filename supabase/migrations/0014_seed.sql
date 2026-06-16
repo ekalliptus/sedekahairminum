@@ -161,5 +161,7 @@ insert into public.settings (key, value) values
   ('social', jsonb_build_object(
     'instagram','','facebook','','youtube','','tiktok','','whatsapp','6285319480974')),
   ('feature_toggles', jsonb_build_object(
-    'blog_enabled', true, 'show_map', true))
+    'blog_enabled', true, 'show_map', true)),
+  ('about', jsonb_build_object(
+    'visi','Menjadi gerakan Sedekah Air Minum terbesar dan paling tepercaya di Indonesia, hadir untuk umat di mana pun mereka berada.'))
 on conflict (key) do nothing;

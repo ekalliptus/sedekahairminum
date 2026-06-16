@@ -52,11 +52,14 @@ export function FieldRenderer({ field, value, onChange }: Props) {
           <Label className="text-xs">{field.label}</Label>
         </div>
       );
-    case 'select':
+    case 'select': {
+      // items map lets base-ui Select show the label on the trigger before the
+      // dropdown is opened (otherwise it shows the raw value when editing).
+      const selectItems = Object.fromEntries((field.options ?? []).map((o) => [o.value, o.label]));
       return (
         <div className="space-y-1.5">
           <Label className="text-xs">{field.label}</Label>
-          <Select value={strVal} onValueChange={(v) => onChange(v)}>
+          <Select items={selectItems} value={strVal} onValueChange={(v) => onChange(v)}>
             <SelectTrigger><SelectValue /></SelectTrigger>
             <SelectContent>
               {(field.options ?? []).map((o) => (
@@ -66,6 +69,7 @@ export function FieldRenderer({ field, value, onChange }: Props) {
           </Select>
         </div>
       );
+    }
     case 'image':
       return <ImageField field={field} value={strVal} onChange={onChange} />;
     default:

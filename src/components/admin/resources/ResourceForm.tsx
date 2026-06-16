@@ -47,14 +47,28 @@ export default function ResourceForm({ resourceSlug, initial }: Props) {
     const supabase = createSupabaseBrowser();
     const db = supabase as any;
     const row = parsed.data as Record<string, unknown>;
-    row.sort_order = values.sort_order ?? 0;
 
     if (isEdit) {
+      // Preserve the row's existing position.
+      row.sort_order = values.sort_order ?? 0;
       const { error } = await db.from(def.table).update(row).eq('id', initial!.id as string);
       if (error) { toast.error(error.message); setSaving(false); return; }
       await recordActivity(supabase, { action: 'update', entityType: def.table, entityId: initial!.id as string, summary: `memperbarui ${def.label}` });
       toast.success('Diperbarui');
     } else {
+      // New orderable rows go to the end: sort_order = current max + 1. Without
+      // this every new row defaults to 0 and ties sort arbitrarily.
+      if (def.orderable) {
+        const { data: top } = await db
+          .from(def.table)
+          .select('sort_order')
+          .order('sort_order', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        row.sort_order = ((top?.sort_order as number | null) ?? -1) + 1;
+      } else {
+        row.sort_order = values.sort_order ?? 0;
+      }
       const { error } = await db.from(def.table).insert(row);
       if (error) { toast.error(error.message); setSaving(false); return; }
       await recordActivity(supabase, { action: 'create', entityType: def.table, summary: `menambah ${def.label}` });

@@ -49,6 +49,11 @@ const FONT_FAMILIES = [
   { label: 'Mono', value: 'ui-monospace, "JetBrains Mono", monospace' },
 ];
 
+// value→label maps so base-ui Select shows the right label on the trigger
+// without needing the dropdown opened first.
+const FONT_SIZE_ITEMS = Object.fromEntries(FONT_SIZES.map((f) => [f.value, f.label]));
+const FONT_FAMILY_ITEMS = Object.fromEntries(FONT_FAMILIES.map((f) => [f.label === 'Default' ? '' : f.value, f.label]));
+
 // A deliberately rich toolbar ("tools berlimpah"): formatting, headings, lists,
 // alignment, blocks, links, images, documents, tables, color, and history.
 export function EditorToolbar({ editor, onUploadImage, onUploadDoc }: Props) {
@@ -134,6 +139,7 @@ export function EditorToolbar({ editor, onUploadImage, onUploadDoc }: Props) {
 
       {/* Font size & family */}
       <Select
+        items={FONT_SIZE_ITEMS}
         value={editor.getAttributes('textStyle').fontSize ?? ''}
         onValueChange={(v: string | null) => {
           if (v) chain().setFontSize(v).run();
@@ -150,6 +156,7 @@ export function EditorToolbar({ editor, onUploadImage, onUploadDoc }: Props) {
         </SelectContent>
       </Select>
       <Select
+        items={FONT_FAMILY_ITEMS}
         value={editor.getAttributes('textStyle').fontFamily ?? ''}
         onValueChange={(v: string | null) => {
           if (v) chain().setFontFamily(v).run();

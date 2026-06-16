@@ -3,8 +3,11 @@ import IndonesiaMap from './IndonesiaMap';
 
 interface Props {
   points: Array<{ lng: number; lat: number; name: string; alamat: string; galon: number }>;
+  penerimaCount?: number;
+  galonTotal?: number;
 }
-const { points } = Astro.props;
+const { points, penerimaCount = points.length, galonTotal } = Astro.props;
+const galonLabel = galonTotal != null ? galonTotal.toLocaleString('id-ID') : null;
 ---
 
 <section class="section map-section">
@@ -21,7 +24,7 @@ const { points } = Astro.props;
     </div>
     <div class="map-legend fade-up">
       <span class="map-legend__item"><span class="map-legend__dot" style="background:#5ee4f0"></span> Lokasi penerima manfaat</span>
-      <span class="map-legend__item" style="margin-left:auto;color:var(--ink-dim)">Data 2026 · 19 lembaga · 298 galon/distribusi · Kab. Gunung Kidul</span>
+      <span class="map-legend__item" style="margin-left:auto;color:var(--ink-dim)">Data 2026 · {penerimaCount} lembaga{galonLabel ? ` · ${galonLabel} galon/distribusi` : ''} · Kab. Gunung Kidul</span>
     </div>
   </div>
 </section>

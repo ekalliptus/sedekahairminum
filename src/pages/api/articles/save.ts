@@ -31,6 +31,7 @@ const schema = z.object({
   category_id: z.string().uuid().nullable().optional(),
   meta_title: z.string().max(MAX_META_TITLE).nullable().optional(),
   meta_description: z.string().max(MAX_META_DESC).nullable().optional(),
+  focus_keyword: z.string().max(MAX_META_TITLE).nullable().optional(),
   og_image: z.string().url().max(MAX_URL).nullable().optional()
     .or(z.literal('').transform(() => null)),
   tag_ids: z.array(z.string().uuid()).max(50).default([]),
@@ -74,6 +75,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     category_id: payload.category_id ?? null,
     meta_title: payload.meta_title ?? null,
     meta_description: payload.meta_description ?? null,
+    focus_keyword: payload.focus_keyword ?? null,
     og_image: payload.og_image ?? null,
     reading_time: minutes,
   };

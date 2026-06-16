@@ -117,6 +117,7 @@ export type Database = {
           cover_image: string | null
           created_at: string
           excerpt: string | null
+          focus_keyword: string | null
           id: string
           meta_description: string | null
           meta_title: string | null
@@ -137,6 +138,7 @@ export type Database = {
           cover_image?: string | null
           created_at?: string
           excerpt?: string | null
+          focus_keyword?: string | null
           id?: string
           meta_description?: string | null
           meta_title?: string | null
@@ -157,6 +159,7 @@ export type Database = {
           cover_image?: string | null
           created_at?: string
           excerpt?: string | null
+          focus_keyword?: string | null
           id?: string
           meta_description?: string | null
           meta_title?: string | null
@@ -595,6 +598,24 @@ export type Database = {
         }
         Insert: {
           key: string
+          updated_at?: string
+          value?: Json
+        }
+        Update: {
+          key?: string
+          updated_at?: string
+          value?: Json
+        }
+        Relationships: []
+      }
+      seo_settings: {
+        Row: {
+          key: string
+          updated_at: string
+          value: Json
+        }
+        Insert: {
+          key?: string
           updated_at?: string
           value?: Json
         }

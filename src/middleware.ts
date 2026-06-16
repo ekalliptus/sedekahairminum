@@ -3,7 +3,7 @@ import { createSupabaseServer } from '@/lib/supabase/server';
 import { publicEnv } from '@/lib/supabase/env';
 import type { Role } from '@/lib/supabase/types';
 
-const ADMIN_ONLY_PREFIXES = ['/admin/settings', '/admin/users', '/admin/activity', '/admin/submissions'];
+const ADMIN_ONLY_PREFIXES = ['/admin/settings', '/admin/users', '/admin/activity', '/admin/submissions', '/admin/seo'];
 
 /** Security headers applied to admin HTML responses. */
 function applySecurityHeaders(response: Response, path: string): Response {
