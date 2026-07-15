@@ -55,7 +55,7 @@ const types = ['Semua', 'Pesantren', 'Yayasan'];
             <span class="eyebrow">Daftar Lembaga</span>
             <h2 style="margin-top:18px">Penyaluran <em class="italic-serif">terbaru</em>.</h2>
           </div>
-          <p class="section-head__intro">Daftar 19 penerima manfaat. Untuk laporan lengkap, hubungi tim kami via WhatsApp.</p>
+          <p class="section-head__intro">Daftar {penerima.length} penerima manfaat. Untuk laporan lengkap, hubungi tim kami via WhatsApp.</p>
         </div>
 
         <div class="penerima-toolbar fade-up">
@@ -93,10 +93,17 @@ const types = ['Semua', 'Pesantren', 'Yayasan'];
                   <td style="color:var(--ink-muted)">{p.city}</td>
                   <td style="text-align:right;font-family:var(--font-mono);color:var(--ink-strong)">{p.galon}</td>
                   <td>
-                    <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:#7fe9c4">
-                      <span style="width:6px;height:6px;border-radius:50%;background:#7fe9c4"></span>
-                      Tersalurkan
-                    </span>
+                    {p.status === 'selesai' ? (
+                      <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:#f0837f">
+                        <span style="width:6px;height:6px;border-radius:50%;background:#f0837f"></span>
+                        Selesai tersalurkan
+                      </span>
+                    ) : (
+                      <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:#7fe9c4">
+                        <span style="width:6px;height:6px;border-radius:50%;background:#7fe9c4"></span>
+                        Tersalurkan
+                      </span>
+                    )}
                   </td>
                 </tr>
               ))}
